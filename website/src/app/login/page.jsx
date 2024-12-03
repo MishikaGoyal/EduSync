@@ -128,9 +128,9 @@ export default function Page() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="flex items-center justify-center py-3 border bg-black text-white rounded-full hover:bg-slate-600">
+              <div className="flex items-center justify-center  border bg-black text-white rounded-full hover:bg-slate-600">
                 <button
-                  className=" bounce-bottom w-[100px] h-[100%]"
+                  className=" bounce-bottom  h-[100%] py-3 w-full "
                   onClick={() => logIn(loginId, password)}
                 >
                   Sign In

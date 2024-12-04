@@ -130,16 +130,11 @@ export default function Page() {
               </div>
               <div className="flex items-center justify-center  border bg-black text-white rounded-full hover:bg-slate-600">
                 <button
-<<<<<<< HEAD
-                  className=" bounce-bottom  h-[100%] py-3 w-full "
-                  onClick={() => logIn(loginId, password)}
-=======
                   className=" bounce-bottom w-[100px] h-[100%]"
                   onClick={() => {
                     logIn(loginId, password)
                     console.log(loginId , password)
                   }}
->>>>>>> 59e75999 (feat: request dashboard)
                 >
                   Sign In
                 </button>

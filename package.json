@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "cors": "^2.8.5",
-    "daisyui": "^4.12.10",
-    "ldrs": "^1.0.2",
-    "react-spinners": "^0.14.1"
-  }
-}

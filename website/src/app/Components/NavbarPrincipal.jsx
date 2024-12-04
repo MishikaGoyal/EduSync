@@ -38,6 +38,11 @@ function Navbar() {
                 Guidelines
               </li>
             </Link>
+            <Link href="/principal/request">
+              <li className="mt-[10px]  hover:bg-blue-700 py-2 px-2 rounded-md ">
+                Request
+              </li>
+            </Link>
           </div>
           <div className="w-[20%] flex justify-end pr-5 py-2">
             <Link href="/">

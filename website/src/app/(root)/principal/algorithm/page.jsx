@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar1 from "@/app/Components/NavbarPrincipal";
 import Footer from "@/app/Components/Footer";
+import Navbar from "@/app/Components/NavbarAdmin";
 
 function Page() {
   const [inputData, setInputData] = useState(null); // For storing fetched school data
@@ -76,7 +76,7 @@ function Page() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Navbar */}
-      <Navbar1 text={"PRINCIPAL"} />
+      <Navbar />
 
       {/* Main content area */}
       <div className="flex flex-col items-center flex-grow mt-4 p-6">

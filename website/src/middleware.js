@@ -15,7 +15,6 @@ export async function middleware(req) {
 
     const { role } = payload;
     const url = req.nextUrl;
-    console.log(role);
 
     // Role-based access control
     if (url.pathname.startsWith("/admin") && role !== "Admin") {

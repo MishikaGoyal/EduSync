@@ -25,7 +25,7 @@ export default function Page() {
       });
       const resData = await res.json();
       if (res.status === 200) {
-        sessionStorage.setItem("userId", resData.loginId);
+        sessionStorage.setItem("userId", resData.userId);
         sessionStorage.setItem("udiseId", resData.udiseId);
         router.push(`/${resData.role.toLowerCase()}`);
       } else {

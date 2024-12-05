@@ -22,11 +22,18 @@ export default function SignoutButton() {
   };
 
   return (
-    <button
-      onClick={handleSignout}
-      className="text-white  px-4 py-2 rounded hover:bg-blue-700"
-    >
-      Sign Out
-    </button>
+    <li>
+      <button
+        onClick={handleSignout}
+        className="relative work-sans-text text-blue-950 font-semibold text-lg transition-all duration-300 group"
+      >
+        {/* Gradient Effect on Hover */}
+        <span className="group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r from-purple-200 via-pink-300 to-blue-400">
+          Sign Out
+        </span>
+        {/* Underline Animation */}
+        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-blue-400 to-pink-300 transition-all duration-300 group-hover:w-full"></span>
+      </button>
+    </li>
   );
 }

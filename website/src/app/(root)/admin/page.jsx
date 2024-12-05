@@ -106,9 +106,12 @@ export default function AdminPage() {
                 onChange={handleFileChange}
               />
               <div className="modal-action">
-               <Link href='/admin/schools'> <button className="btn" onClick={handleSubmit}>
-                  Submit
-                </button></Link>
+                <Link href="/admin/schools">
+                  {" "}
+                  <button className="btn" onClick={handleSubmit}>
+                    Submit
+                  </button>
+                </Link>
                 <button className="btn" onClick={() => setIsModalOpen(false)}>
                   Close
                 </button>
@@ -200,8 +203,8 @@ export default function AdminPage() {
         >
           <div className="w-full md:w-[600px] flex items-center">
             <p className="text-md leading-relaxed">
-              The "Show School Data" feature enables admins to monitor all the schools 
-              added in the database previously.
+              The "Show School Data" feature enables admins to monitor all the
+              schools added in the database previously.
             </p>
           </div>
 
@@ -215,10 +218,10 @@ export default function AdminPage() {
             </figure>
             <div className="card-body flex flex-col justify-between h-1/3 p-4">
               <h2 className="card-title text-xl font-semibold">
-              All School Data
+                All School Data
               </h2>
               <p className="mt-2 text-sm">
-               See The Data of All Schools in the Database
+                See The Data of All Schools in the Database
               </p>
               <div className="card-actions mt-auto flex justify-end">
                 <Link href="/admin/schools">

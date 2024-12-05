@@ -11,7 +11,21 @@ export async function middleware(req) {
   }
 
   try {
-    await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+
+    const { role } = payload;
+    const url = req.nextUrl;
+    console.log(role);
+
+    // Role-based access control
+    if (url.pathname.startsWith("/admin") && role !== "Admin") {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+
+    if (url.pathname.startsWith("/principal") && role !== "Principal") {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+
     return NextResponse.next();
   } catch (err) {
     console.error("Token verification failed:", err.message);

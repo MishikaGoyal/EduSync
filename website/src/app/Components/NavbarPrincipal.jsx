@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { FaHome } from "react-icons/fa";
+import SignoutButton from "./SignoutButton";
 
 function Navbar() {
   return (
@@ -48,9 +49,7 @@ function Navbar() {
             <Link href="/">
               <li className="">
                 {" "}
-                <button className=" hover:text-white hover:bg-blue-700 py-2 px-2 rounded-md ">
-                  Signout
-                </button>
+                <SignoutButton />
               </li>
             </Link>
           </div>

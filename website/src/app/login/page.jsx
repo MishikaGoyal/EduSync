@@ -132,8 +132,8 @@ export default function Page() {
                 <button
                   className=" bounce-bottom w-[100px] h-[100%]"
                   onClick={() => {
-                    logIn(loginId, password)
-                    console.log(loginId , password)
+                    logIn(loginId, password);
+                    console.log(loginId, password);
                   }}
                 >
                   Sign In
@@ -142,7 +142,7 @@ export default function Page() {
             </div>
           </div>
         </>
-      )}
+      )}{" "}
     </>
   );
 }

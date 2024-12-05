@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { FaHome } from "react-icons/fa";
+import SignoutButton from "./SignoutButton";
 
 function Navbar() {
   return (
@@ -32,15 +33,12 @@ function Navbar() {
               Allocate Resources
             </li>
           </Link>
-         
         </ul>
         <ul className="justify-end py-2 w-[20%] mt-2 flex pr-5">
           <Link href="/">
             <li className="">
               {" "}
-              <button className=" hover:text-white hover:bg-blue-700 rounded-md p-2  ">
-                Signout
-              </button>
+              <SignoutButton />
             </li>
           </Link>
         </ul>

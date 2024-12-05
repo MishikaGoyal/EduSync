@@ -1,191 +1,176 @@
 "use client";
+import React, { useRef, useEffect } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import { AnimatedPinDemo } from "@/app/Components/model";
 import Navbar from "@/app/Components/NavbarPrincipal";
-import Link from "next/link";
-import Image from "next/image";
 import Footer from "@/app/Components/Footer";
-import Chatbot from "@/app/Components/Chatbot";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Page() {
+  const featureRefs = useRef([]);
+
+  useEffect(() => {
+    // Animate hero section
+    gsap.fromTo(
+      "#heroHeadline",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, delay: 0.2, ease: "power4.out" }
+    );
+
+    gsap.fromTo(
+      "#heroDescription",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, delay: 0.4, ease: "power4.out" }
+    );
+
+    gsap.fromTo(
+      "#ctaButton",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, delay: 0.6, ease: "power4.out" }
+    );
+  }, []);
+
+  useEffect(() => {
+    // Animate features on scroll
+    featureRefs.current.forEach((feature, index) => {
+      gsap.fromTo(
+        feature,
+        { opacity: 0, y: 100, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: feature,
+            start: "top 90%",
+            end: "top 70%",
+            scrub: true,
+          },
+        }
+      );
+    });
+  }, []);
+
+  const scrollToFeatures = () => {
+    const featureSection = document.getElementById("featuresSection");
+    featureSection.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const features = [
+    {
+      imageSrc: "/img11.jpg",
+      title: "Check School Structure",
+      href: "/principal/structure",
+      headline: "Check Structure",
+      description:
+        "Gain a comprehensive overview of your school's infrastructure with this feature. It provides detailed information about key elements such as the number of classrooms, teacher availability, and essential facilities. With an easy-to-navigate interface, principals can ensure that resources are allocated effectively and identify any gaps in infrastructure that might require attention. This helps streamline decision-making and maintain an optimal learning environment for students.",
+    },
+    {
+      imageSrc: "/img13.jpg",
+      title: "Submit Updates",
+      href: "/principal/progress",
+      headline: "Submit Updates",
+      description:
+        "Keep all stakeholders informed by submitting timely updates about the school. Whether it’s about upcoming events, achievements, or ongoing infrastructure improvements, this feature ensures that vital information reaches everyone quickly and efficiently. By fostering transparency and communication, it strengthens trust and collaboration among teachers, students, parents, and administrators.",
+    },
+    {
+      imageSrc: "/img12.jpg",
+      title: "Request Resources",
+      href: "/principal/resources",
+      headline: "Request Resources",
+      description:
+        "Ensure your school is equipped with all the necessary supplies to enhance the learning experience. This feature allows you to raise requests for additional resources, such as books, furniture, or technology. With a streamlined request process, you can address shortages effectively and create an environment that supports both students and teachers in achieving their best.",
+    },
+    {
+      imageSrc: "/img6.jpg",
+      title: "Guidelines",
+      href: "/principal/guidelines",
+      headline: "Guidelines",
+      description:
+        "Stay aligned with educational standards and policies through the Guidelines feature. This section provides access to up-to-date, structured guidance on administrative processes, compliance with regulatory frameworks, and best practices for effective school management. Designed to assist principals in making informed decisions, this feature ensures that your school operates within the required protocols while fostering a safe, inclusive, and high-performing educational environment.",
+    },
+  ];
+
   return (
-    <div className="min-w-max">
-      <div>
-        <Navbar />
-        <div className="flex flex-col md:flex-row items-center justify-evenly mt-12 space-y-4 md:space-y-0 md:space-x-8">
-          <h1 className="tracking-in-expand-fwd text-xl font-extrabold text-center md:text-left">
-            Get All your School Information <br /> and upgrade your school to
-            standard
-          </h1>
-          <Image
-            src="/img6.jpg"
-            width={400}
-            height={200}
-            className="rounded-xl shadow-black"
-          />
-        </div>
-        <div
-          id="know"
-          className="flex flex-col md:flex-row items-start justify-evenly mt-8 mb-4 p-4 bg-gray-200 shadow-lg rounded-lg border border-gray-200 w-[90%] mx-auto"
+    <>
+      <Navbar />
+      <main className="min-h-screen px-8 py-12 mt-4 ">
+        {/* Hero Section */}
+        <section
+          className="relative bg-gradient-to-r from-purple-100 to-blue-100 text-white py-20 px-8 rounded-lg shadow-xl overflow-hidden"
+          id="heroSection"
         >
-          {/* Card - 1 */}
-          <div className="card bg-base-100 image-full w-full md:w-[400px] h-[280px] shadow-xl rounded-lg">
-            <figure className="relative w-full h-full">
-              <img
-                src="https://cdn.pixabay.com/photo/2016/02/06/09/56/science-1182713_1280.jpg"
-                alt="Know Your School"
-                className="w-full h-full object-cover rounded-t-lg"
-              />
-            </figure>
-            <div className="card-body p-4">
-              <h2 className="card-title text-xl font-semibold">
-                Know Your School
-              </h2>
-              <Link href="/principal/structure">
-                <button className="btn btn-primary mt-4">See Now</button>
-              </Link>
-            </div>
+          {/* Background Effects */}
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-0 w-92 h-68 bg-purple-200 rounded-full blur-[100px] opacity-30"></div>
+            <div className="absolute bottom-0 right-0 w-72 h-58 bg-blue-200 rounded-full blur-[80px] opacity-20"></div>
           </div>
 
-          {/* Text - 1 */}
-          <div className="w-full md:w-[600px] p-4  ">
-            <p className="text-md text-left leading-relaxed ">
-              This feature leverages a machine learning model to evaluate key
-              school attributes like infrastructure, student-to-teacher ratio,
-              curriculum quality, and safety measures. Schools are classified as
-              "odd" if they significantly deviate from standard norms, or
-              "standard" if they align with accepted educational criteria
+          {/* Content */}
+          <div className="relative z-10 text-center max-w-3xl mx-auto">
+            <h1
+              id="heroHeadline"
+              className="ubuntu-bold-italic text-6xl mb-6 leading-tight tracking-wide text-blue-950"
+            >
+              Welcome to the <br />
+              <span className="text-blue-950 ubuntu-bold-italic">
+                Principal Dashboard
+              </span>
+            </h1>
+            <p
+              id="heroDescription"
+              className="work-sans-text text-xl max-w-3xl mx-auto leading-relaxed mb-8 text-blue-400 font-semibold"
+            >
+              An intelligent platform empowering school principals to manage,
+              update, and optimize school operations efficiently.
             </p>
+            <button
+              id="ctaButton"
+              className="inline-block px-8 py-4 text-lg font-medium bg-gray-100 text-black rounded-full shadow-lg hover:bg-gray-100 transform transition-transform hover:scale-105 border-2 border-violet-300"
+              onClick={scrollToFeatures}
+            >
+              Explore Features
+            </button>
           </div>
-        </div>
+        </section>
 
-        <div className="flex flex-col md:flex-row items-center justify-evenly p-4 mb-4 shadow-lg rounded-lg bg-gray-200 w-[90%] mx-auto">
-          {/* Text - 2 */}
-          <div className="w-full md:w-[600px] p-4 flex items-center">
-            <p className="text-md leading-relaxed">
-              An "Update School Information" feature allows users to revise key
-              school data, including infrastructure, enrollment, teacher
-              qualifications, and safety protocols. Keeping this data current
-              ensures accurate analysis and reliable school classifications.
-              Updates also prompt the machine learning model to re-evaluate the
-              school’s classification, maintaining accuracy.
-            </p>
-          </div>
+        <section id="featuresSection" className="mt-16 space-y-12">
+          {features.map((feature, i) => (
+            <div
+              key={i}
+              ref={(el) => (featureRefs.current[i] = el)}
+              className="bg-white rounded-lg shadow-lg p-6 max-w-6xl max-h-[450px] mx-auto flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 transform transition-transform duration-300 hover:scale-105 shadow-md shadow-violet-300"
+            >
+              {/* Image with navigation indicator and tooltip */}
+              <div className="relative group">
+                <AnimatedPinDemo
+                  title={feature.title}
+                  href={feature.href}
+                  imageSrc={feature.imageSrc}
+                  className="transition-transform duration-300 hover:scale-105"
+                />
+                {/* Tooltip */}
+              </div>
 
-          {/* Card - 2 */}
-          <div
-            id="update"
-            className="card bg-base-100 image-full w-full md:w-[400px] h-[280px] shadow-xl rounded-xl overflow-hidden"
-          >
-            <figure>
-              <img
-                src="https://cdn.pixabay.com/photo/2024/02/28/03/55/ai-generated-8601128_1280.png"
-                alt="Shoes"
-                className="w-full h-full object-cover"
-              />
-            </figure>
-            <div className="card-body flex flex-col justify-between h-1/3 p-4">
-              <h2 className="card-title text-xl font-semibold">Mark Updates</h2>
-              <p className="mt-2 text-sm">
-                If any changes are made by you in your school during this
-                period, please update us!
-              </p>
-              <div className="card-actions mt-auto flex justify-end">
-                <Link href="principal/Progress">
-                  <button className="btn btn-primary">Update Now</button>
-                </Link>
+              {/* Title and Description */}
+              <div className="max-w-md ">
+                <h2 className="text-2xl ml-24  ubuntu-bold-italic font-semibold text-blue-950 mb-2 border-b-4 border-black pb-2 inline-block">
+                  {feature.headline}
+                </h2>
+
+                <p className="text-gray-700 text-sm ml-24 justify-left text-left">
+                  {feature.description}
+                </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div
-          id="resource"
-          className="flex flex-col md:flex-row items-start justify-evenly p-4 mb-4 bg-gray-200 shadow-lg rounded-lg border border-gray-200 w-[90%] mx-auto"
-        >
-          {/* Card 3 */}
-          <div className="card bg-base-100 image-full w-full md:w-[380px] h-[280px] shadow-xl rounded-xl overflow-hidden flex-shrink-0">
-            <figure className="relative w-full h-full">
-              <img
-                src="https://cdn.pixabay.com/photo/2016/11/14/03/16/book-1822474_1280.jpg"
-                alt="Shoes"
-                className="w-full h-[150px] object-cover"
-              />
-            </figure>
-            <div className="card-body flex flex-col h-full p-4">
-              <h2 className="card-title text-xl font-semibold">
-                Request Resources
-              </h2>
-              <p className="mt-4 text-sm">
-                Any resources required for upgrading your school from odd
-                structure to standard. Send us a request and we will help you!
-              </p>
-              <div className="card-actions mt-auto flex justify-end">
-                <Link href="/principal/algorithm">
-                  <button className="btn btn-primary ">Check Resources</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Text Section - 3 */}
-          <div className="w-full md:w-[600px] p-4 ">
-            <p className="text-md text-left leading-relaxed">
-              The Resource Request feature enables schools to request essential
-              resources like educational materials, infrastructure, and
-              technology. It streamlines communication between schools and
-              administrators, facilitating efficient management and allocation
-              of resources. This centralized platform ensures access to
-              necessary tools for quality education and improves transparency in
-              resource distribution.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-evenly p-4 mb-4 shadow-lg rounded-lg bg-gray-200 w-[90%] mx-auto">
-          {/* Text -4 */}
-          <div className="w-full md:w-[600px] flex items-center">
-            <p className="text-md leading-relaxed">
-              The "Guidelines for Upgradation" feature offers schools detailed
-              steps to transition from "odd" to "standard" status. It includes
-              customized recommendations, best practices, compliance checklists,
-              and case studies to improve various aspects such as
-              infrastructure, teaching methods, student engagement. By following
-              these guidelines, schools can address gaps effectively, align with
-              educational standards, and ensure continuous improvement and
-              high-quality education.
-            </p>
-          </div>
-
-          {/* Card-4 */}
-          <div
-            id="guide"
-            className="card bg-base-100 image-full w-full md:w-[380px] h-[280px] shadow-xl rounded-xl overflow-hidden"
-          >
-            <figure className="w-full h-2/3">
-              <img
-                src="https://cdn.pixabay.com/photo/2016/03/17/23/07/abstract-1264071_1280.png"
-                alt="Guidelines"
-                className="w-full h-full object-cover"
-              />
-            </figure>
-            <div className="card-body flex flex-col justify-between h-1/3 p-4">
-              <h2 className="card-title text-xl font-semibold">Guidelines</h2>
-              <p className="mt-2 text-sm">
-                Any problem in upgrading? Go through these guidelines; they will
-                help you for sure!
-              </p>
-              <div className="card-actions mt-auto flex justify-end">
-                <Link href="/principal/Guidelines">
-                  <button className="btn btn-primary">Know How</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Chatbot />
-      <Footer className="mt-[10px]" />
-    </div>
+          ))}
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 }
-
-/* sendMessage("/api/sendmessage2") */

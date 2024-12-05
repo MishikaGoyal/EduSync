@@ -1,4 +1,5 @@
 "use client";
+import { CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -106,35 +107,31 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <div className="grid place-items-center h-[100vh] ml-[900px] ">
-            <div className=" w-[20rem]  flex flex-col h-[15rem]  justify-between ">
-              <div className="w-full text-black border-2 rounded-xl">
-                <input
-                  className="w-full py-3 px-3 rounded-xl tracking-in-expand-fwd "
-                  type="text"
-                  name=""
-                  placeholder="Login ID"
-                  value={loginId}
-                  onChange={(e) => setLoginId(e.target.value)}
-                />
-              </div>
-              <div className=" tracking-in-expand-fwd w-full text-black border-2 rounded-xl">
-                <input
-                  className="w-full py-3 px-3 rounded-xl"
-                  type="Password"
-                  name=""
-                  placeholder="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <div className="flex items-center justify-center  border bg-black text-white rounded-full hover:bg-slate-600">
+          <div className="grid place-items-center h-[100vh] ml-[900px] w-[500px] border-r-black ">
+            <div className="w-[20rem] bg-white shadow-lg border rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-center mb-4">Login</h2>
+              <div className="flex flex-col space-y-4">
+                <div className="w-full text-black border rounded-md">
+                  <input
+                    className="w-full py-2 px-3 rounded-md tracking-in-expand-fwd focus:outline-none focus:ring focus:ring-blue-300"
+                    type="text"
+                    placeholder="Login ID"
+                    value={loginId}
+                    onChange={(e) => setLoginId(e.target.value)}
+                  />
+                </div>
+                <div className="w-full text-black border rounded-md">
+                  <input
+                    className="w-full py-2 px-3 rounded-md tracking-in-expand-fwd focus:outline-none focus:ring focus:ring-blue-300"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
                 <button
-                  className=" bounce-bottom w-[100px] h-[100%]"
-                  onClick={() => {
-                    logIn(loginId, password);
-                    console.log(loginId, password);
-                  }}
+                  className="w-full py-2 bg-black text-white rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center"
+                  onClick={() => logIn(loginId, password)}
                 >
                   Sign In
                 </button>
@@ -142,7 +139,7 @@ export default function Page() {
             </div>
           </div>
         </>
-      )}{" "}
+      )}
     </>
   );
 }

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Message from "@/app/Components/Message";
 
 export default function Chat() {
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState();
   const [isClient, setIsClient] = useState(false);
   const [messages, setMessages] = useState([]);
 
@@ -27,7 +27,8 @@ export default function Chat() {
   useEffect(() => {
     // Mark the component as mounted to avoid hydration issues
     setIsClient(true);
-    setUserId(sessionStorage.getItem("userId") || "guest"); // Fallback for SSR
+
+    setUserId(sessionStorage.getItem("userId")); // Fallback for SSR
     fetchMessages();
   }, []);
 
@@ -35,11 +36,12 @@ export default function Chat() {
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-
+    console.log(userId);
     const newMsg = {
-      userId: userId || "guest", // Use userId from state
-      userRole: "principal", // Replace dynamically if needed
+      loginId: userId,
+      userRole: "Principal", // Replace dynamically if needed
       text: newMessage,
+      displayName: "",
       timestamp: new Date().toISOString(),
     };
 
@@ -50,6 +52,8 @@ export default function Chat() {
       },
       body: JSON.stringify(newMsg),
     });
+
+    const resData = await request.json();
 
     setMessages((prevMessages) => [...prevMessages, newMsg]);
     setNewMessage("");
@@ -63,7 +67,7 @@ export default function Chat() {
   return (
     <div className="flex flex-col h-screen bg-gray-100 px-[15%]">
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto mb-4 space-y-4 bg-[rgba(0,0,0,0.07)] px-5 pt-[2rem]">
+      <div className="flex-1 overflow-y-auto space-y-4 bg-[rgba(0,0,0,0.07)] px-5 pt-[2rem] mb-[4rem] pb-[2rem]">
         {messages.map((msg, index) => (
           <Message
             key={index}

@@ -4,29 +4,35 @@ const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 async function main() {
-  const messages = [
+  const users = [
     {
-      userId: "admin123",
-      userRole: Role.Admin,
-      text: "Welcome to the chat! Let me know if you need help.",
-      timestamp: "2024-12-05T10:00:00Z",
+      loginId: "teacher0",
+      password: "abcdefgh",
+      role: Role.Teacher,
+      udiseId: "29  20  01  23  910",
     },
     {
-      userId: "principal456",
-      userRole: Role.Principal,
-      text: "Thanks! Can you guide me on the dashboard?",
-      timestamp: "2024-12-05T10:02:00Z",
+      loginId: "teacher1",
+      password: "abcdefgh",
+      role: Role.Teacher,
+      udiseId: "29  20  01  23  912",
+    },
+    {
+      loginId: "teacher2",
+      password: "abcdefgh",
+      role: Role.Teacher,
+      udiseId: "29  20  01  23  915",
     },
   ];
 
-  for (m of messages) {
-    await prisma.message.create({
+  for (const user of users) {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    await prisma.user.create({
       data: {
-        loginId: m.userId,
-        role: m.userRole,
-        text: m.text,
-        timestamp: m.timestamp,
-        displayName: "",
+        loginId: user.loginId,
+        password: hashedPassword,
+        role: user.role,
+        udiseId: user.udiseId,
       },
     });
   }

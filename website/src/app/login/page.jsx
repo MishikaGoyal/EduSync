@@ -27,7 +27,11 @@ export default function Page() {
       if (res.status === 200) {
         sessionStorage.setItem("userId", resData.userId);
         sessionStorage.setItem("udiseId", resData.udiseId);
-        router.push(`/${resData.role.toLowerCase()}`);
+        if (resData.role == "Teacher") {
+          router.push("/forum");
+        } else {
+          router.push(`/${resData.role.toLowerCase()}`);
+        }
       } else {
         setLoading(false);
         if (resData.message === "Invalid user") {

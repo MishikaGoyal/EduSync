@@ -72,7 +72,7 @@ export default function Page() {
     {
       imageSrc: "/img13.jpg",
       title: "Submit Updates",
-      href: "/principal/progress",
+      href: "/principal/Progress",
       headline: "Submit Updates",
       description:
         "Keep all stakeholders informed by submitting timely updates about the school. Whether it’s about upcoming events, achievements, or ongoing infrastructure improvements, this feature ensures that vital information reaches everyone quickly and efficiently. By fostering transparency and communication, it strengthens trust and collaboration among teachers, students, parents, and administrators.",

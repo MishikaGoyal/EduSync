@@ -38,5 +38,6 @@ export const config = {
     "/protected:path*",
     "/principal:path*",
     "/admin:path*",
+    "/forum:path*",
   ],
 };

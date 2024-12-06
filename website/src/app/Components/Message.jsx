@@ -2,8 +2,6 @@ import React from "react";
 import Image from "next/image";
 
 export default function Message({ userId, userRole, text, timestamp }) {
-  const getInitials = (role) => role[0]?.toUpperCase() || "?";
-
   return (
     <div
       className="flex items-start gap-4 mb-4 border py-3 px-5 rounded-lg text-gray-800 bg-gray-100"
@@ -12,7 +10,7 @@ export default function Message({ userId, userRole, text, timestamp }) {
       {/* Profile Icon */}
 
       <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 text-white font-bold">
-        {getInitials(userRole)}
+        A
       </div>
 
       {/* Message Content */}

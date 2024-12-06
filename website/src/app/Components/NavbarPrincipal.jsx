@@ -4,10 +4,10 @@ import { FaSchool } from "react-icons/fa";
 import SignoutButton from "./SignoutButton";
 export default function Navbar() {
   const menuItems = [
-    { name: "Know Structure", href: "principal/structure", icon: <FaHome /> },
-    { name: "Make Updates", href: "principal/Progress" },
-    { name: "Check Resources", href: "principal/algorithm" },
-    { name: "Guidelines", href: "principal/Guidelines" },
+    { name: "Know Structure", href: "/principal/structure", icon: <FaHome /> },
+    { name: "Make Updates", href: "/principal/Progress" },
+    { name: "Check Resources", href: "/principal/algorithm" },
+    { name: "Guidelines", href: "/principal/Guidelines" },
   ];
 
   return (

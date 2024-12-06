@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",
+    "@radix-ui/react-progress": "^1.1.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
     "daisyui": "^4.12.14",

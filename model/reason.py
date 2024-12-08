@@ -29,7 +29,7 @@ def check_conditions(record):
         lists.append(s)
     if (separate_room_for_hm != 1 ):
         lists.append('There should be a seperate room for headmaster/headmistress.')
-    if (grade_configuration not in [(1, 5), (1, 10), (1, 12), (6, 10), (11, 12), (6,12)] ):
+    if (grade_configuration not in [(1, 5), (1,8), (1, 10), (1, 12), (6,8), (6, 10), (6,12), (9,10), (9,12), (11,12)] ):
         lists.append('Your school does not follow grade configuration norm.')
     if (school_type == 3 and (total_washrooms[0] < 1 or total_washrooms[1] < 1)) :
         s= f'There should be seperate washroom for boys and girls. You have {total_washrooms[0]} for boys and {total_washrooms[1]} for girls.'

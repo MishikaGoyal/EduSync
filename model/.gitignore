@@ -1,4 +1,10 @@
+# Ignore environment files
 .env
-__pycache__
-/datasets
+
+# Ignore specific Python files
+api.py
+reason.py
 model.py
+
+# Ignore other specific files
+chatbot.txt

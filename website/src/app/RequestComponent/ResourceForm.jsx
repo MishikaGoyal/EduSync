@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { PlusCircle, AlertCircle } from 'lucide-react';
 import { RESOURCE_TYPES } from '../utils/resourceType';
 import { validateQuantity } from '../utils/validation';
+import debounce from 'lodash.debounce';
 
 export default function ResourceForm({ onRequestCreated }) {
   const [type, setType] = useState('');
@@ -12,23 +13,30 @@ export default function ResourceForm({ onRequestCreated }) {
   const [udiseId, setUdiseId] = useState(null);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("udiseId")
+    const id = sessionStorage.getItem("udiseId");
     if (id) {
       console.log("Fetched UDISE ID:", id);
       setUdiseId(id);
     } else {
       console.error("No UDISE ID found in session storage.");
     }
-  }, [])
+  }, []);
 
   const handleQuantityChange = (e) => {
     const inputValue = e.target.value;
-    setQuantity(inputValue);
+    setQuantity(inputValue); // Update the quantity immediately
     if (type) {
-      const validation = validateQuantity(type, inputValue);
-      setQuantityError(validation.isValid ? '' : validation.error);
+      debouncedValidation(inputValue); // Only debounce validation
     }
   };
+
+  const debouncedValidation = useCallback(
+    debounce((inputValue) => {
+      const validation = validateQuantity(type, inputValue);
+      setQuantityError(validation.isValid ? '' : validation.error);
+    }, 300),
+    [type]
+  );
 
   const handleTypeChange = (e) => {
     const newType = e.target.value;
@@ -39,7 +47,7 @@ export default function ResourceForm({ onRequestCreated }) {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
     if (!udiseId) {
@@ -80,14 +88,14 @@ export default function ResourceForm({ onRequestCreated }) {
       const contentType = response.headers.get("Content-Type");
       if (!contentType || !contentType.includes("application/json")) {
         console.error("Expected JSON but got:", contentType);
-        //return;
+        return;
       }
 
       const responseData = await response.json(); // Parse the response as JSON
 
       console.log("logging the newly created resource request:", responseData);
-      
-      onRequestCreated(responseData);
+      onRequestCreated(responseData); // Use the passed down callback
+
       // Reset form
       setType('');
       setQuantity('');
@@ -98,7 +106,8 @@ export default function ResourceForm({ onRequestCreated }) {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [udiseId, type, quantity, description, quantityError, onRequestCreated]); // Dependencies
+
 
   return (
     <form onSubmit={handleSubmit} className="card">

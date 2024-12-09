@@ -8,6 +8,7 @@ export default function Navbar() {
     { name: "Make Updates", href: "/principal/Progress" },
     { name: "Check Resources", href: "/principal/algorithm" },
     { name: "Guidelines", href: "/principal/Guidelines" },
+    { name:"Request Resources", href:"/principal/request"}
   ];
 
   return (

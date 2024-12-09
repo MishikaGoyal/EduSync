@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { School, LayoutDashboard, Clock, CheckCircle, MoveRight } from 'lucide-react';
 import ResourceForm from '@/app/RequestComponent/ResourceForm';
@@ -9,6 +9,7 @@ function Page() {
   const [resources, setResources] = useState([]);
 
   useEffect(() => {
+    console.log("API called from main page")
     const udise_code = sessionStorage.getItem("udiseId")
     const fetchresources = async () => {
       try {
@@ -19,7 +20,7 @@ function Page() {
         }
         const data = await response.json()
 
-        console.log(data)
+        console.log("logging all resource data from useEffect GET call", data)
 
         setResources(data)
       } catch (error) {
@@ -42,7 +43,8 @@ function Page() {
     );
   };
 
-  const getStatusCounts = () => {
+  // Memoize the status counts calculation
+  const statusCounts = useMemo(() => {
     return resources.reduce(
       (acc, resource) => ({
         ...acc,
@@ -50,9 +52,8 @@ function Page() {
       }),
       { pending: 0, moved: 0, allocated: 0 }
     );
-  };
+  }, [resources]);  // Recalculate only if 'resources' changes
 
-  const statusCounts = getStatusCounts();
 
   return (
     <div className="min-h-screen">

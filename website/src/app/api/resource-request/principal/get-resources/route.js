@@ -17,6 +17,8 @@ export async function GET(req) {
             }
         })
 
+        console.log("returning the resources for the school from get-resources api",resources)
+
         return NextResponse.json(resources, { status: 200 });
     } catch (error) {
         console.error("Error fetching resource requests:", error);

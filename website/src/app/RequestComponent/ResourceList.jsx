@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { CheckCircle, Clock, MoveRight, AlertTriangle, RotateCcw } from 'lucide-react';
 import { formatDistanceToNow, isPast } from 'date-fns';
 
-export default function ResourceList({ resources, onResourceUpdate }) {
+// Wrap the component with React.memo to prevent unnecessary re-renders
+const ResourceList = React.memo(({ resources, onResourceUpdate }) => {
+  
   const getStatusIcon = (status) => {
     switch (status) {
       case 'pending':
@@ -16,7 +18,8 @@ export default function ResourceList({ resources, onResourceUpdate }) {
     }
   };
 
-  const handleMarkReceived = async (id) => {
+  // Memoize the handleMarkReceived function
+  const handleMarkReceived = useCallback(async (id) => {
     try {
       const response = await fetch("api/resource-request/principal/mark-received", {
         headers: { "Content-Type": "application/json" },
@@ -24,10 +27,10 @@ export default function ResourceList({ resources, onResourceUpdate }) {
         body: JSON.stringify({
           resourceId: id,
         }),
-      })
+      });
 
       if (!response.ok) {
-        console.error("Failed to re-request resource:", response.statusText);
+        console.error("Failed to mark resource as received:", response.statusText);
         return;
       }
 
@@ -35,15 +38,13 @@ export default function ResourceList({ resources, onResourceUpdate }) {
       console.log("logging for the mark Received data :", result);
 
       onResourceUpdate(result.updatedResource);
-
     } catch (error) {
       console.error('Failed to mark resource as received:', error);
     }
-  };
+  }, [onResourceUpdate]); // Depend on onResourceUpdate to avoid unnecessary re-creations
 
-
-  // to handle the re-reuqest for the particular resource
-  const handleReRequest = async (id) => {
+  // Memoize the handleReRequest function
+  const handleReRequest = useCallback(async (id) => {
     try {
       const response = await fetch("/api/resource-request/principal/re-request", {
         headers: { "Content-Type": "application/json" },
@@ -62,12 +63,10 @@ export default function ResourceList({ resources, onResourceUpdate }) {
       console.log("logging for re-request data", result);
 
       onResourceUpdate(result.updatedResource);
-
     } catch (error) {
       console.error("Failed to re-request resource:", error);
     }
-  };
-
+  }, [onResourceUpdate]); // Depend on onResourceUpdate to avoid unnecessary re-creations
 
   if (resources.length === 0) {
     return (
@@ -78,8 +77,6 @@ export default function ResourceList({ resources, onResourceUpdate }) {
       </div>
     );
   }
-
-  console.log("logging resources from the ResorceList :", resources)
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100">
@@ -97,9 +94,6 @@ export default function ResourceList({ resources, onResourceUpdate }) {
           </thead>
           <tbody className="bg-white/50 backdrop-blur-sm divide-y divide-gray-100">
             {resources.map((resource) => {
-              // Access the actual resource data inside the 'resource_request' object
-              //const data = resource.resource_request;
-
               const isOverdue = resource.max_date_for_resource_delivery && isPast(new Date(resource.max_date_for_resource_delivery));
               const canReRequest = resource.status === 'moved' && isOverdue;
 
@@ -159,7 +153,7 @@ export default function ResourceList({ resources, onResourceUpdate }) {
       </div>
     </div>
   );
-}
+});
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -173,3 +167,5 @@ const getStatusColor = (status) => {
       return '';
   }
 };
+
+export default ResourceList;

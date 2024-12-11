@@ -25,8 +25,10 @@ function Page() {
     fetchSchools();
   }, []);
 
-  const filteredSchools = schools.filter((school) =>
-    school.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredSchools = schools.filter(
+    (school) =>
+      school.name &&
+      school.name.trim().toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const selectedSchool = selectedSchoolId

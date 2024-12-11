@@ -1,14 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "@/app/Components/NavbarPrincipal";
+import { motion } from "framer-motion";
+import Navbar from "@/app/Components/NavbarAdmin";
 
 const Page = () => {
   const [expandedSchool, setExpandedSchool] = useState(null);
-
   const [schools, setSchools] = useState([]);
+  const [filteredSchools, setFilteredSchools] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [filters, setFilters] = useState({
+    state: "",
+    category: "",
+    schoolType: "",
+    search: "",
+  });
 
   useEffect(() => {
     const fetchAllSchoolData = async () => {
@@ -28,6 +35,7 @@ const Page = () => {
 
         const data = await response.json();
         setSchools(data.schools || []);
+        setFilteredSchools(data.schools || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -37,6 +45,50 @@ const Page = () => {
 
     fetchAllSchoolData();
   }, []);
+
+  useEffect(() => {
+    const filterSchools = () => {
+      let filtered = schools;
+
+      if (filters.state) {
+        filtered = filtered.filter(
+          (school) => school.State.toLowerCase() === filters.state.toLowerCase()
+        );
+      }
+
+      if (filters.category) {
+        filtered = filtered.filter(
+          (school) =>
+            school.School_Category.toLowerCase() ===
+            filters.category.toLowerCase()
+        );
+      }
+
+      if (filters.schoolType) {
+        filtered = filtered.filter(
+          (school) =>
+            school.School_Type.toLowerCase() ===
+            filters.schoolType.toLowerCase()
+        );
+      }
+
+      if (filters.search) {
+        filtered = filtered.filter((school) =>
+          school.UDISE_CODE.toString()
+            .toLowerCase()
+            .includes(filters.search.toLowerCase())
+        );
+      }
+
+      setFilteredSchools(filtered);
+    };
+
+    filterSchools();
+  }, [filters, schools]);
+
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error}</p>;
@@ -54,6 +106,75 @@ const Page = () => {
           School Information
         </motion.h1>
 
+        {/* Filters */}
+        <div className="flex flex-wrap gap-4 mb-8 justify-center">
+          <div>
+            <select
+              name="state"
+              value={filters.state}
+              onChange={handleFilterChange}
+              className="px-4 py-2 border rounded-md text-gray-600"
+            >
+              <option value="">Filter by State</option>
+              {[...new Set(schools.map((school) => school.State))].map(
+                (state) => (
+                  <option key={state} value={state}>
+                    {state}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+          <div>
+            <select
+              name="category"
+              value={filters.category}
+              onChange={handleFilterChange}
+              className="px-4 py-2 border rounded-md text-gray-600"
+            >
+              <option value="">Filter by Category</option>
+              {[
+                ...new Set(schools.map((school) => school.School_Category)),
+              ].map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <select
+              name="schoolType"
+              value={filters.schoolType}
+              onChange={handleFilterChange}
+              className="px-4 py-2 border rounded-md text-gray-600"
+            >
+              <option value="">Filter by School Type</option>
+              {[...new Set(schools.map((school) => school.School_Type))].map(
+                (type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <input
+              type="text"
+              name="search"
+              value={filters.search}
+              onChange={handleFilterChange}
+              placeholder="Search by UDISE Code"
+              className="px-4 py-2 border rounded-md text-gray-600"
+            />
+            <span className="absolute top-2 right-3 text-gray-400">🔍</span>
+          </div>
+        </div>
+
+        {/* Table */}
         <div className="overflow-x-auto shadow-2xl rounded-lg">
           <motion.table
             className="min-w-full bg-white rounded-lg border border-gray-200"
@@ -73,101 +194,40 @@ const Page = () => {
                   School Category
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  School Management
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   School Type
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Year of Establishment
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   Total Classrooms
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Library Available
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Drinking Water
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Playground
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Electricity
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Total Teachers
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Total Students
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Result
-                </th>
               </tr>
             </thead>
-            {schools.map((school, index) => (
-              <motion.tr
-                key={index}
-                className="hover:bg-indigo-50 transition duration-300 border-b border-black"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.UDISE_CODE}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.State}
-                </td>
-                <td
-                  className="p
-              <tbody>x-6 py-4 whitespace-nowrap text-sm text-blue-950"
+            <tbody>
+              {filteredSchools.map((school, index) => (
+                <motion.tr
+                  key={index}
+                  className="hover:bg-indigo-50 transition duration-300 border-b border-black"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  {school.School_Category}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.School_Management}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.School_Type}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Year_of_Establishment}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Total_Class_Rooms}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Library_Available ? "Yes" : "No"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Drinking_Water_Available ? "Yes" : "No"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Playground_Available ? "Yes" : "No"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Electricity_Availability ? "Yes" : "No"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Total_Teachers}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
-                  {school.Total_Students}
-                </td>
-                <td
-                  className={`px-6 py-4 whitespace-nowrap text-sm ${
-                    school.Result.toLowerCase() === "odd"
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
-                >
-                  {school.Result}
-                </td>
-              </motion.tr>
-            ))}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.UDISE_CODE}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.State}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.School_Category}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.School_Type}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Total_Class_Rooms}
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
           </motion.table>
         </div>
       </div>

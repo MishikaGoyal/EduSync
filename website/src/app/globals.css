@@ -395,3 +395,66 @@ body {
   font-weight: 400;
   font-style: normal;
 }
+
+
+/* admin allocate rsource css styles  */
+
+@layer base {
+  body {
+    @apply bg-gray-50;
+  }
+}
+
+@layer components {
+  .dashboard-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-shadow hover:shadow-md;
+  }
+  
+  .card-header {
+    @apply p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white;
+  }
+  
+  .status-badge {
+    @apply px-3 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .status-badge-pending {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+  
+  .status-badge-moved {
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
+  }
+  
+  .status-badge-allocated {
+    @apply bg-green-50 text-green-700 border border-green-200;
+  }
+  
+  .action-button {
+    @apply px-4 py-2 text-sm font-medium rounded-lg transition-colors;
+  }
+  
+  .action-button-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+}
+
+/* React Day Picker custom styles */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: rgb(37 99 235);
+  --rdp-background-color: rgb(37 99 235 / 0.1);
+  margin: 0;
+}
+
+.rdp-day_selected:not([disabled]) {
+  @apply bg-blue-600 text-white font-medium;
+}
+
+.rdp-day_selected:hover:not([disabled]) {
+  @apply bg-blue-700;
+}
+
+.rdp-day_today {
+  @apply font-bold text-blue-600;
+}

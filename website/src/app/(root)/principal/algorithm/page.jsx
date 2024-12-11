@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Footer from "@/app/Components/Footer";
-import Navbar from "@/app/Components/NavbarAdmin";
+import Navbar from "@/app/Components/NavbarPrincipal";
 
 function Page() {
   const [inputData, setInputData] = useState(null); // For storing fetched school data

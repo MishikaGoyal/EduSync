@@ -5,6 +5,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { AnimatedPinDemo } from "@/app/Components/model";
 import Navbar from "@/app/Components/NavbarPrincipal";
 import Footer from "@/app/Components/Footer";
+import Chatbot from "@/app/Components/Chatbot";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -171,6 +172,7 @@ export default function Page() {
         </section>
       </main>
       <Footer />
+      <Chatbot />
     </>
   );
 }

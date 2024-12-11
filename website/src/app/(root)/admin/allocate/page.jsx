@@ -1,15 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SchoolSearch } from "@/app/RequestComponent/SchoolSearch";
 import { SchoolList } from "@/app/RequestComponent/SchoolList";
 import { ResourceDetails } from "@/app/RequestComponent/ResourceDetails";
-import { mockSchools } from "@/lib/mockData";
 import Navbar from "@/app/Components/NavbarAdmin";
 
 function Page() {
-  const [schools, setSchools] = useState(mockSchools);
+  const [schools, setSchools] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSchoolId, setSelectedSchoolId] = useState(null);
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        const response = await fetch("/api/resource-request/admin/get-schools");
+        if (!response.ok) throw new Error("Failed to fetch schools");
+        const data = await response.json();
+        setSchools(data);
+      } catch (error) {
+        console.error("Error fetching schools:", error);
+      }
+    };
+
+    fetchSchools();
+  }, []);
 
   const filteredSchools = schools.filter((school) =>
     school.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -48,7 +62,6 @@ function Page() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-            {" "}
             Admin Resource Management Dashboard
           </h1>
           <SchoolSearch

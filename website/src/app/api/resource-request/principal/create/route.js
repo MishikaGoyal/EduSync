@@ -8,7 +8,7 @@ export async function POST(req) {
   try {
     // Parse request body
     const body = await req.json();
-    const { UDISE_CODE, resource_type, quantity, description, adminId } = body;
+    const { UDISE_CODE, School_Name ,resource_type, quantity, description, adminId } = body;
 
     // Validate required fields
     if (!UDISE_CODE || !resource_type || !quantity) {
@@ -25,6 +25,7 @@ export async function POST(req) {
     const resources = await prisma.resource.create({
       data: {
         UDISE_CODE,
+        School_Name,
         resource_type,
         quantity,
         description,

@@ -11,15 +11,41 @@ export default function ResourceForm({ onRequestCreated }) {
   const [quantityError, setQuantityError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [udiseId, setUdiseId] = useState(null);
+  const [schoolName, setSchoolName] = useState("");
 
   useEffect(() => {
-    const id = sessionStorage.getItem("udiseId");
-    if (id) {
-      console.log("Fetched UDISE ID:", id);
-      setUdiseId(id);
-    } else {
-      console.error("No UDISE ID found in session storage.");
-    }
+    const fetchSchoolName = async () => {
+      try {
+        const id = sessionStorage.getItem("udiseId");
+        if (!id) {
+          console.error("No UDISE ID found in session storage.");
+          return;
+        }
+
+        setUdiseId(id);
+
+        const response = await fetch(
+          `/api/resource-request/principal/get-name?udise_code=${id}`
+        );
+
+        if (!response.ok) {
+          console.error("Failed to fetch school name:", response.statusText);
+          return;
+        }
+
+        const data = await response.json();
+        if (data?.School_Name) {
+          setSchoolName(data.School_Name);
+          console.log("Fetched School Name:", data.School_Name);
+        } else {
+          console.error("School name not found in response.");
+        }
+      } catch (error) {
+        console.error("Error fetching school name:", error);
+      }
+    };
+
+    fetchSchoolName();
   }, []);
 
   const handleQuantityChange = (e) => {
@@ -51,8 +77,8 @@ export default function ResourceForm({ onRequestCreated }) {
     async (e) => {
       e.preventDefault();
 
-      if (!udiseId) {
-        console.error("No UDISE ID found.");
+      if (!udiseId || !schoolName) {
+        console.error("Missing UDISE ID or School Name.");
         return;
       }
 
@@ -66,19 +92,23 @@ export default function ResourceForm({ onRequestCreated }) {
 
       setIsSubmitting(true);
       try {
-        const response = await fetch("/api/resource-request/principal/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            UDISE_CODE: udiseId,
-            resource_type: type,
-            quantity: parseInt(quantity, 10),
-            description: description,
-            adminId: "admin_1",
-          }),
-        });
+        const response = await fetch(
+          "/api/resource-request/principal/create",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              UDISE_CODE: udiseId,
+              School_Name: schoolName, // Include school name in the payload
+              resource_type: type,
+              quantity: parseInt(quantity, 10),
+              description: description,
+              adminId: "admin_1",
+            }),
+          }
+        );
 
         if (!response.ok) {
           console.error(
@@ -88,20 +118,9 @@ export default function ResourceForm({ onRequestCreated }) {
           return;
         }
 
-        // Check if the content type is JSON before parsing
-        const contentType = response.headers.get("Content-Type");
-        if (!contentType || !contentType.includes("application/json")) {
-          console.error("Expected JSON but got:", contentType);
-          return;
-        }
-
-        const responseData = await response.json(); // Parse the response as JSON
-
-        console.log(
-          "logging the newly created resource request:",
-          responseData
-        );
-        onRequestCreated(responseData); // Use the passed down callback
+        const responseData = await response.json();
+        console.log("Newly created resource request:", responseData);
+        onRequestCreated(responseData);
 
         // Reset form
         setType("");
@@ -114,8 +133,8 @@ export default function ResourceForm({ onRequestCreated }) {
         setIsSubmitting(false);
       }
     },
-    [udiseId, type, quantity, description, quantityError, onRequestCreated]
-  ); // Dependencies
+    [udiseId, schoolName, type, quantity, description, quantityError, onRequestCreated]
+  );
 
   return (
     <form onSubmit={handleSubmit} className="card">
@@ -156,8 +175,7 @@ export default function ResourceForm({ onRequestCreated }) {
             placeholder={
               type
                 ? `Enter quantity in ${
-                    RESOURCE_TYPES.find((r) => r.label === type)?.unit ||
-                    "units"
+                    RESOURCE_TYPES.find((r) => r.label === type)?.unit || "units"
                   }`
                 : "Select a resource type first"
             }

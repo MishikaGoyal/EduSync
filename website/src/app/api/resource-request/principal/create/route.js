@@ -18,11 +18,10 @@ export async function POST(req) {
       );
     }
 
-    // Calculate max date for resource delivery (one month from now)
+    
     const currentDate = new Date();
     const maxDateForDelivery = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
 
-    // Create the resource in the database
     const resources = await prisma.resource.create({
       data: {
         UDISE_CODE,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { School, Package2 } from 'lucide-react';
 import { ResourceTable } from './ResourceTable';
-
 export function ResourceDetails({ school, onUpdateStatus }) {
   if (!school) {
     return (

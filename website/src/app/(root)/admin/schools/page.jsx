@@ -1,7 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/app/Components/NavbarPrincipal";
 
 const Page = () => {
+  const [expandedSchool, setExpandedSchool] = useState(null);
+
   const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,86 +42,136 @@ const Page = () => {
   if (error) return <p>Error fetching data: {error}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-        School Information
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {schools.map((school, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              UDISE Code: {school.UDISE_CODE}
-            </h2>
-            <p className="text-gray-700">
-              <span className="font-medium">State:</span> {school.State}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">School Category:</span>{" "}
-              {school.School_Category}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">School Management:</span>{" "}
-              {school.School_Management}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">School Type:</span>{" "}
-              {school.School_Type}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Grade Configuration:</span>{" "}
-              {school.Grade_Configuration}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Year of Establishment:</span>{" "}
-              {school.Year_of_Establishment}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Boundary Wall:</span>{" "}
-              {school.Boundary_Wall ? "Yes" : "No"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Total Class Rooms:</span>{" "}
-              {school.Total_Class_Rooms}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Library Available:</span>{" "}
-              {school.Library_Available ? "Yes" : "No"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Separate Room for HM:</span>{" "}
-              {school.Separate_Room_for_HM ? "Yes" : "No"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Drinking Water Available:</span>{" "}
-              {school.Drinking_Water_Available ? "Yes" : "No"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Playground Available:</span>{" "}
-              {school.Playground_Available ? "Yes" : "No"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Electricity Availability:</span>{" "}
-              {school.Electricity_Availability ? "Yes" : "No"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Total Teachers:</span>{" "}
-              {school.Total_Teachers}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Total Washrooms:</span>{" "}
-              {school.Total_Washrooms}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Total Students:</span>{" "}
-              {school.Total_Students}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Result:</span> {school.Result}
-            </p>
-          </div>
-        ))}
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+        <motion.h1
+          className="text-4xl font-bold text-center text-indigo-600 mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          School Information
+        </motion.h1>
+
+        <div className="overflow-x-auto shadow-2xl rounded-lg">
+          <motion.table
+            className="min-w-full bg-white rounded-lg border border-gray-200"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
+          >
+            <thead className="bg-gradient-to-r from-indigo-200 to-purple-200">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  UDISE Code
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  State
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  School Category
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  School Management
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  School Type
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Year of Establishment
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Total Classrooms
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Library Available
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Drinking Water
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Playground
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Electricity
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Total Teachers
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Total Students
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Result
+                </th>
+              </tr>
+            </thead>
+            {schools.map((school, index) => (
+              <motion.tr
+                key={index}
+                className="hover:bg-indigo-50 transition duration-300 border-b border-black"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.UDISE_CODE}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.State}
+                </td>
+                <td
+                  className="p
+              <tbody>x-6 py-4 whitespace-nowrap text-sm text-blue-950"
+                >
+                  {school.School_Category}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.School_Management}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.School_Type}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Year_of_Establishment}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Total_Class_Rooms}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Library_Available ? "Yes" : "No"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Drinking_Water_Available ? "Yes" : "No"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Playground_Available ? "Yes" : "No"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Electricity_Availability ? "Yes" : "No"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Total_Teachers}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                  {school.Total_Students}
+                </td>
+                <td
+                  className={`px-6 py-4 whitespace-nowrap text-sm ${
+                    school.Result.toLowerCase() === "odd"
+                      ? "text-red-500"
+                      : "text-green-500"
+                  }`}
+                >
+                  {school.Result}
+                </td>
+              </motion.tr>
+            ))}
+          </motion.table>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

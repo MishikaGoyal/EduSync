@@ -30,6 +30,7 @@ export async function POST(req) {
       });
     }
 
+    console.log(data);
     await prisma.school.create({
       data: {
         UDISE_CODE: schoolData["UDISE CODE"] || "",
@@ -56,6 +57,7 @@ export async function POST(req) {
         CWSN: parseInt(schoolData["CWSN"]) === 1,
         Total_Students: schoolData["Total Students"],
         Result: schoolData["Result"],
+        Severity: schoolData["Severity"],
       },
     });
   } catch (error) {

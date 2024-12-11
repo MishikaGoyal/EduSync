@@ -58,35 +58,10 @@ model School {
   Total_Teachers           String
   Total_Washrooms          String
   CWSN                     Boolean
+  Severity String
   Total_Students           String
   Result                   String
 }
-
-model SchoolClone{
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
-  UDISE_CODE       String @unique
-  School_Name      String
-  State            String
-  School_Category  String
-  School_Management String
-  School_Type      String
-  Grade_Configuration String
-  Year_of_Establishment String
-  Boundary_Wall    Boolean
-  Total_Class_Rooms String
-  Library_Available Boolean
-  Separate_Room_for_HM Boolean
-  Drinking_Water_Available Boolean
-  Playground_Available Boolean
-  Electricity_Availability Boolean
-  Total_Teachers   String
-  Total_Washrooms  String
-  CWSN             Boolean
-  Total_Students   String
-  Result String
-}
-
-
 model schoolUpdates {
   id                       String  @id @default(auto()) @map("_id") @db.ObjectId
   UDISE_CODE               String  @unique

@@ -161,8 +161,8 @@ export default function SchoolDashboard() {
               />
 
               <StatCard
-                title="Grades"
-                value={schoolData?.Grade_Configuration}
+                title="Severity"
+                value={schoolData?.Severity}
                 color="text-purple-500"
               />
             </div>

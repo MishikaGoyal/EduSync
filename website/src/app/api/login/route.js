@@ -35,7 +35,7 @@ export async function POST(req) {
     const token = await new SignJWT({ userId: user.loginId, role: user.role })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime("1h")
+      .setExpirationTime("2h")
       .sign(secretKey);
 
     const response = NextResponse.json(
@@ -51,7 +51,7 @@ export async function POST(req) {
     response.cookies.set("token", token, {
       httpOnly: true,
       path: "/",
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 60 * 120, // 1 hour
     });
 
     return response;

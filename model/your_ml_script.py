@@ -110,8 +110,6 @@ def extract_data_from_pdf(pdf_path):
     # Apply the same conversion logic used in the training set
     df = df.map(convert_range_to_numeric)
     df = df.apply(pd.to_numeric, errors='coerce').fillna(0)
-    print(df,"\n")
-    print(parsed_data)
 
     return df, parsed_data
 
@@ -162,45 +160,52 @@ def reasons(record):
     return lists
 
 def severity_calculation(record):
-    total_teachers = int(record.get("Total_Teachers", 0))
-    total_students = int(record.get("Total_Students", 0))
-    separate_room_for_hm = int(record.get("Separate_Room_for_HM", 0))
-    grade_configuration_str = record.get("Grade_Configuration", "(0,0)")
+    total_teachers = int(record.get("Total Teachers", 0))
+    total_students = int(record.get("Total Students", 0))
+    separate_room_for_hm = int(record.get("Separate Room for HM", 0))
+    grade_configuration_str = record.get("Grade Configuration", "(0,0)")
     grade_configuration = tuple(map(int, grade_configuration_str.strip("()").split(',')))
-    school_type = int(record.get("School_Type", 0))
-    total_washrooms_str = record.get("Total_Washrooms", "(0,0)")
+    school_type = int(record.get("School Type", 0))
+    total_washrooms_str = record.get("Total Washrooms", "(0,0)")
     total_washrooms = tuple(map(int, total_washrooms_str.strip("()").split(',')))
-    boundary_wall = int(record.get("Boundary_Wall", 0))
-    library_available = int(record.get("Library_Available", 0))
-    drinking_water_available = int(record.get("Drinking_Water_Available", 0))
-    playground_available = int(record.get("Playground_Available", 0))
-    electricity_availability = int(record.get("Electricity_Availability", 0))
-    total_classrooms = int(record.get("Total_Class_Rooms", 0))
+    boundary_wall = int(record.get("Boundary Wall", 0))
+    library_available = int(record.get("Library Available", 0))
+    drinking_water_available = int(record.get("Drinking Water Available", 0))
+    playground_available = int(record.get("Playground Available", 0))
+    electricity_availability = int(record.get("Electricity Availability", 0))
+    total_classrooms = int(record.get("Total Class Rooms", 0))
 
-    severity=0
+    s=0
 
     if (total_teachers * 40 < total_students):
-        severity+=3
+        s+=3
     if (separate_room_for_hm != 1 ):
-        severity+=1
+        s+=1
     if (grade_configuration not in [(1, 5), (1,8), (1, 10), (1, 12), (6,8), (6, 10), (6,12), (9,10), (9,12), (11, 12)] ):
-        severity+=3
+        s+=3
     if (school_type == 3 and (total_washrooms[0] < 1 or total_washrooms[1] < 1)) :
-        severity+=2
+        s+=2
     if (boundary_wall != 1 ):
-        severity+=1
+        s+=1
     if (library_available != 1) :
-        severity+=1
+        s+=1
     if (drinking_water_available != 1):
-        severity+=2
+        s+=2
     if (playground_available != 1 ):
-        severity+=1
+        s+=1
     if (electricity_availability != 1 ):
-        severity+=2
+        s+=2
     if (total_students >= total_classrooms * 50):
-        severity+=3
-    
-    return severity
+        s+=3
+
+    if s>=1 and s<=5:
+        return 'Low'
+    elif s>=6 and s<=12:
+        return 'Medium'
+    elif s>=13 and s<=19:
+        return 'High'
+    else:
+        return 'Null'
 
 def removeSymbols(response):
     return response.strip().replace("*", '')

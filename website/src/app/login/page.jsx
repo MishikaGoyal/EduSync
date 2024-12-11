@@ -1,5 +1,5 @@
-
 "use client";
+import Link from "next/link";
 import { CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useState, useEffect } from "react";
@@ -140,6 +140,14 @@ export default function Page() {
                 >
                   Sign In
                 </button>
+                <div className="text-center">or</div>
+
+                <Link
+                  href="/register"
+                  className="w-full py-2 bg-black text-white rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center"
+                >
+                  <button> Register</button>
+                </Link>
               </div>
             </div>
           </div>

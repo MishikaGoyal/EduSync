@@ -1,15 +1,15 @@
-import React from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
-import { DayPicker } from 'react-day-picker';
-import { format } from 'date-fns';
-import { X } from 'lucide-react';
-import 'react-day-picker/dist/style.css';
+import React from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { DayPicker } from "react-day-picker";
+import { format } from "date-fns";
+import { X } from "lucide-react";
+import "react-day-picker/dist/style.css";
 
 export function DatePickerModal({ isOpen, onClose, onSelect, resourceName }) {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
 
   const handleSelect = () => {
-    onSelect(format(selectedDate, 'yyyy-MM-dd'));
+    onSelect(format(selectedDate, "yyyy-MM-dd"));
     onClose();
   };
 
@@ -26,7 +26,7 @@ export function DatePickerModal({ isOpen, onClose, onSelect, resourceName }) {
               <X className="h-5 w-5 text-gray-500" />
             </Dialog.Close>
           </div>
-          
+
           <div className="mb-6">
             <p className="text-sm text-gray-500 mb-4">
               Select the maximum delivery date for this resource
@@ -45,7 +45,7 @@ export function DatePickerModal({ isOpen, onClose, onSelect, resourceName }) {
               />
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-3">
             <button
               onClick={onClose}

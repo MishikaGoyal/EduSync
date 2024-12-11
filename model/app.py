@@ -45,20 +45,16 @@ def predict():
     new_data = new_data[relevant_columns]
 
     check = check_conditions(full_data)
-    severity_score= severity_calculation(full_data)
+    sever= severity_calculation(full_data)
+    full_data['Severity']=sever
     predicted_result = model.predict(new_data)
 
     if check == predicted_result:
         full_data['Result'] = 'Standard' if predicted_result[0] == 1 else 'ODD'
     else:
         full_data['Result'] = check
-    
-    if severity_score>=1 and severity_score<=5:
-        full_data['Severity'] = 'Low'
-    elif severity_score>=6 and severity_score<=12:
-        full_data['Severity'] = 'Medium'
-    elif severity_score>=13 and severity_score<=19:
-        full_data['Severity'] = 'High'
+
+    print(full_data)
 
     return full_data
 

@@ -2,6 +2,7 @@ import pandas as pd
 import PyPDF2
 import re
 import google.generativeai as genai
+import pdfplumber
 
 # Function to convert range strings to numeric values
 def convert_range_to_numeric(value):
@@ -77,7 +78,6 @@ def extract_data_from_pdf(pdf_path):
         "Playground Available": r'Playground Available\s*(\d+)',
         "Electricity Availability": r'Electricity Availability\s*(\d+)',
         "Total Teachers": r'Total\s*(\d+)\s*',
-        "Total Washrooms": r'Total\(Excluding CWSN\)\s*(\d+)\s*(\d+)',
         "Func. CWSN Friendly": r"Func\. CWSN Friendly\s*(\d+)\s+(\d+)",
         "Total Students": r'G\.Tot.*\s(\d+)(?:\s|$)'
     }
@@ -88,9 +88,7 @@ def extract_data_from_pdf(pdf_path):
         match = re.search(pattern, text)
         if match:
             if key == "Grade Configuration":
-                parsed_data["Grade Configuration"] = f"({match.group(1)},{match.group(2)})"
-            elif key == "Total Washrooms":
-                parsed_data["Total Washrooms"] = f"({match.group(1)},{match.group(2)})"
+                parsed_data[key] = f"({match.group(1)},{match.group(2)})"
             elif key == "Func. CWSN Friendly":
                 boys, girls = f"({match.group(1)}, {match.group(2)})"
                 parsed_data[key] = 1 if boys + girls > 0 else 0
@@ -104,6 +102,19 @@ def extract_data_from_pdf(pdf_path):
                 (state for line in text_lines for state in VALID_STATES if state.lower() in line.lower()),
                 None
             )
+    
+    with pdfplumber.open(pdf_path) as pdf:
+            text = ""
+            for page in pdf.pages:
+                text += page.extract_text() if page.extract_text() else ""
+    
+    PATTERNS= {"Total Washrooms": r'Total\(Excluding CWSN\)\s+(\d+)\s+(\d+)'}
+
+    for key, pattern in PATTERNS.items():
+        match = re.search(pattern, text)
+        if match:
+            if key == "Total Washrooms":
+                parsed_data[key] = f"({match.group(1)}, {match.group(2)})"
     
     df = pd.DataFrame([parsed_data])
 

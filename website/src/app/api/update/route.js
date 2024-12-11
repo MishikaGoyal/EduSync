@@ -5,66 +5,80 @@ const prisma = new PrismaClient();
 export async function POST(req) {
   const data = await req.json();
 
-  const name = await prisma.school.findUnique({
-    where: {
-      UDISE_CODE: data.UDISE_CODE,
-    },
-  });
-
-  if (!name) {
-    return NextResponse.json({
-      message: "School does not exist in the database",
-    });
-  }
-  const exists = await prisma.schoolUpdates.findUnique({
-    where: {
-      UDISE_CODE: data.UDISE_CODE,
-    },
-  });
-
-  if (exists) {
-    return NextResponse.json({
-      message: "Update request is still pending",
-      flag: false,
-    });
-  }
-
-  await prisma.schoolUpdates.create({
-    data: {
-      UDISE_CODE: data.UDISE_CODE,
-      School_Name: name.School_Name,
-      State: data.State,
-      Grade_Configuration: data.Grade_Configuration,
-      Boundary_Wall: data.Boundary_Wall,
-      Total_Class_Rooms: data.Total_Class_Rooms,
-      Library_Available: data.Library_Available,
-      Separate_Room_for_HM: data.Separate_Room_for_HM,
-      Drinking_Water_Available: data.Drinking_Water_Available,
-      Playground_Available: data.Playground_Available,
-      Electricity_Availability: data.Electricity_Availability,
-      Total_Students: data.Total_Students,
-      Total_Teachers: data.Total_Teachers,
-      Total_Washrooms: data.Total_Washrooms,
-      Result: data.Result,
-      Verified: false,
-    },
-  });
   console.log(data);
-  return NextResponse.json(
-    { message: "Update request sent successfully", flag: true },
-    { status: 200 }
-  );
-}
-
-export async function GET() {
+  console.log(data.resource_type);
   try {
-    const pendingUpdates = await prisma.schoolUpdates.findMany({
+    const schoolData = await prisma.school.findUnique({
       where: {
-        Verified: false,
+        UDISE_CODE: data.UDISE_CODE,
       },
     });
-    return NextResponse.json(pendingUpdates);
+    console.log("1");
+    if (!schoolData) {
+      return NextResponse.json({
+        message: "School does not exist in the database",
+      });
+    }
+
+    let previousValue;
+    if (data.resource_type == "Total_Class_Rooms") {
+      previousValue = schoolData.Total_Class_Rooms;
+      await prisma.school.update({
+        where: {
+          UDISE_CODE: data.UDISE_CODE,
+        },
+        data: { Total_Class_Rooms: data.new_value },
+      });
+    } else if (data.resource_type == "Total_Teachers") {
+      previousValue = schoolData.Total_Teachers;
+      await prisma.school.update({
+        where: {
+          UDISE_CODE: data.UDISE_CODE,
+        },
+        data: { Total_Teachers: data.new_value },
+      });
+    } else if (data.resource_type == "Total_Washrooms") {
+      previousValue = schoolData.Total_Washrooms;
+      await prisma.school.update({
+        where: {
+          UDISE_CODE: data.UDISE_CODE,
+        },
+        data: { Total_Washrooms: data.new_value },
+      });
+    } else if (data.resource_type == "Total_Students") {
+      previousValue = schoolData.Total_Students;
+      await prisma.school.update({
+        where: {
+          UDISE_CODE: data.UDISE_CODE,
+        },
+        data: { Total_Students: data.new_value },
+      });
+    } else {
+      return NextResponse.json("The type of resource is invalid", {
+        status: 400,
+      });
+    }
+
+    console.log("2");
+    await prisma.updates.create({
+      data: {
+        UDISE_CODE: data.UDISE_CODE,
+        status: "Pending",
+        resource_type: data.resource_type,
+        new_value: data.new_value,
+        previous_value: previousValue,
+        description: data.description,
+        url: "",
+      },
+    });
+    console.log("3");
+
+    return NextResponse.json(
+      { message: "Data updated succesfully", flag: true },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ message: "Error in finding data" });
+    console.log(error.message);
+    return NextResponse.json("Internal Server Error", { status: 500 });
   }
 }

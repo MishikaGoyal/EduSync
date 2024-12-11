@@ -4,18 +4,11 @@ import { motion } from "framer-motion";
 import Navbar from "@/app/Components/NavbarAdmin";
 
 const Page = () => {
-  const [expandedSchool, setExpandedSchool] = useState(null);
   const [schools, setSchools] = useState([]);
-  const [filteredSchools, setFilteredSchools] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [filters, setFilters] = useState({
-    state: "",
-    category: "",
-    schoolType: "",
-    search: "",
-  });
+  const [filterState, setFilterState] = useState(""); // State for filtering
+  const [filteredSchools, setFilteredSchools] = useState([]); // State for filtered schools
 
   useEffect(() => {
     const fetchAllSchoolData = async () => {
@@ -35,7 +28,7 @@ const Page = () => {
 
         const data = await response.json();
         setSchools(data.schools || []);
-        setFilteredSchools(data.schools || []);
+        setFilteredSchools(data.schools || []); // Initialize filtered schools
       } catch (err) {
         setError(err.message);
       } finally {
@@ -46,32 +39,17 @@ const Page = () => {
     fetchAllSchoolData();
   }, []);
 
-  useEffect(() => {
-    const filterSchools = () => {
-      let filtered = schools;
-
-      if (filters.state) {
-        filtered = filtered.filter(
-          (school) => school.State.toLowerCase() === filters.state.toLowerCase()
-        );
-      }
-
-      if (filters.search) {
-        filtered = filtered.filter((school) =>
-          school.UDISE_CODE.toString()
-            .toLowerCase()
-            .includes(filters.search.toLowerCase())
-        );
-      }
-
+  // Filter schools by state
+  const handleFilterChange = (state) => {
+    setFilterState(state);
+    if (state) {
+      const filtered = schools.filter((school) =>
+        school.State.toLowerCase().includes(state.toLowerCase())
+      );
       setFilteredSchools(filtered);
-    };
-
-    filterSchools();
-  }, [filters, schools]);
-
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+    } else {
+      setFilteredSchools(schools); // Reset to all schools when filter is cleared
+    }
   };
 
   if (loading) return <p>Loading...</p>;
@@ -90,41 +68,17 @@ const Page = () => {
           School Information
         </motion.h1>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-4 mb-8 justify-center">
-          <div className="relative">
-            <input
-              type="text"
-              name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
-              placeholder="Search by UDISE Code"
-              className="px-4 py-2 border rounded-md text-gray-600"
-            />
-            <span className="absolute top-2 right-3 text-gray-400">🔍</span>
-          </div>
-          <div>
-            <select
-              name="state"
-              value={filters.state}
-              onChange={handleFilterChange}
-              className="px-4 py-2 border rounded-md text-gray-600"
-            >
-              <option value="">Filter by State</option>
-              {[...new Set(schools.map((school) => school.State))].map(
-                (state) => (
-                  <option key={state} value={state}>
-                    {state}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
-
-          {/* Search */}
+        {/* Filter Section */}
+        <div className="mb-8 flex justify-center">
+          <input
+            type="text"
+            value={filterState}
+            onChange={(e) => handleFilterChange(e.target.value)}
+            placeholder="Filter by State"
+            className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          />
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto shadow-2xl rounded-lg">
           <motion.table
             className="min-w-full bg-white rounded-lg border border-gray-200"
@@ -144,10 +98,37 @@ const Page = () => {
                   School Category
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  School Management
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   School Type
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Year of Establishment
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   Total Classrooms
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Library Available
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Drinking Water
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Playground
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Electricity
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Total Teachers
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Total Students
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  Result
                 </th>
               </tr>
             </thead>
@@ -170,10 +151,43 @@ const Page = () => {
                     {school.School_Category}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.School_Management}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
                     {school.School_Type}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Year_of_Establishment}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
                     {school.Total_Class_Rooms}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Library_Available ? "Yes" : "No"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Drinking_Water_Available ? "Yes" : "No"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Playground_Available ? "Yes" : "No"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Electricity_Availability ? "Yes" : "No"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Total_Teachers}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.Total_Students}
+                  </td>
+                  <td
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${
+                      school.Result.toLowerCase() === "odd"
+                        ? "text-red-500"
+                        : "text-green-500"
+                    }`}
+                  >
+                    {school.Result}
                   </td>
                 </motion.tr>
               ))}

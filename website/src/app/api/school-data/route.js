@@ -15,7 +15,7 @@ export async function POST(req) {
       { status: 400 }
     );
   }
-
+  console.log(schoolData);
   let formattedSchoolData = {
     ...schoolData,
     Boundary_Wall: `${schoolData.Boundary_Wall === false ? "2" : "1"}`,
@@ -34,7 +34,6 @@ export async function POST(req) {
     }`,
   };
 
-  console.log(schoolData);
   return NextResponse.json(
     { message: "School data found ", data: formattedSchoolData },
     { status: 200 }

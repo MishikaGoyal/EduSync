@@ -14,6 +14,7 @@ export async function POST(req) {
     });
 
     const schoolData = await response.json();
+    console.log(schoolData);
     const code = schoolData["UDISE CODE"];
 
     const isThere = await prisma.school.findUnique({
@@ -39,7 +40,7 @@ export async function POST(req) {
         School_Type: schoolData["School Type"] || "",
         Grade_Configuration: schoolData["Grade Configuration"] || "",
         Year_of_Establishment: schoolData["Year of Establishment"] || "",
-        Boundary_Wall: schoolData["Boundaty Wall"] || false,
+        Boundary_Wall: parseInt(schoolData["Boundary Wall"]) === 1,
         Total_Class_Rooms: schoolData["Total Class Rooms"] || "",
         Library_Available: parseInt(schoolData["Library Available"]) === 1,
         Separate_Room_for_HM:

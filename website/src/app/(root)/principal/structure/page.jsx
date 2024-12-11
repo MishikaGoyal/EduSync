@@ -110,6 +110,11 @@ export default function SchoolDashboard() {
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               <StatCard
+                title="State"
+                value={schoolData?.State}
+                color="text-blue-500"
+              />
+              <StatCard
                 title="Teachers"
                 value={schoolData?.Total_Teachers}
                 color="text-blue-500"
@@ -148,6 +153,17 @@ export default function SchoolDashboard() {
               <FacilityCard
                 title="Boundary Wall"
                 available={schoolData?.Boundary_Wall === "1"}
+              />
+              <StatCard
+                title="Male-Female Washrooms"
+                value={schoolData?.Total_Washrooms}
+                color="text-purple-500"
+              />
+
+              <StatCard
+                title="Grades"
+                value={schoolData?.Grade_Configuration}
+                color="text-purple-500"
               />
             </div>
           </div>

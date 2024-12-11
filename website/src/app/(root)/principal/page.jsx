@@ -2,10 +2,10 @@
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import { AnimatedPinDemo } from "@/app/Components/model";
-import Navbar from "@/app/Components/NavbarPrincipal";
-import Footer from "@/app/Components/Footer";
-import Chatbot from "@/app/Components/Chatbot";
+import { AnimatedPinDemo } from "../../Components/model";
+import Navbar from "../../Components/NavbarPrincipal";
+import Footer from "../../Components/Footer";
+import Chatbot from "../../Components/Chatbot";
 
 gsap.registerPlugin(ScrollTrigger);
 

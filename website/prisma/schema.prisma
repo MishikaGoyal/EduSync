@@ -120,3 +120,14 @@ model Resource {
   rerequest_count                Int      @default(0)
   adminId                        String
 }
+
+model Updates{
+     id String   @id @default(auto()) @map("_id") @db.ObjectId
+     UDISE_CODE String
+     resource_type String
+     status String
+     previous_value String
+     new_value String
+     url String
+     description String
+}

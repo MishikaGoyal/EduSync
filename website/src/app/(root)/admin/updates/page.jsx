@@ -1,40 +1,31 @@
 "use client";
-import Navbar from "@/app/Components/NavbarAdmin";
-import UpdateComponent from "@/app/Components/UpdateComponent";
-import { useEffect, useState } from "react";
-const page = () => {
-  const [updateData, setUpdateData] = useState([]);
-  const fetchUpdateData = async () => {
-    const response = await fetch("/api/update", {
-      headers: { "Content-Type": "application/json" },
-      method: "GET",
-      cache: "no-store",
-    });
 
-    let resData = await response.json();
-    setUpdateData(resData);
-  };
+import { useEffect, useState } from "react";
+import UpdatesDisplay from "../../../Components/UpdatesDisplay";
+
+const Page = () => {
+  const [updatesData, setUpdatesData] = useState([]);
 
   useEffect(() => {
-    fetchUpdateData();
+    fetchRequestData();
   }, []);
 
+  const fetchRequestData = async () => {
+    const response = await fetch("/api/admin-update-data", {
+      method: "GET",
+      headers: { "content-type": "application/json" },
+    });
+
+    const resData = await response.json();
+    console.log(resData);
+    setUpdatesData(resData);
+  };
+
   return (
-    <section className="px-[10%]">
-      <Navbar />
-      <div className="grid grid-cols-5 w-full border-2 rounded-lg bg-blue-600 font-bold text-white my-5 py-5 px-5">
-        <div className="col-span-2">School Name</div>
-        <div>UDISE CODE</div>
-        <div>Status</div>
-        <div></div>
-      </div>
-      <div>
-        {updateData.map((item, index) => {
-          return <UpdateComponent data={item} key={index} />;
-        })}
-      </div>
-    </section>
+    <div className="min-h-screen bg-gray-100">
+      <UpdatesDisplay updatesData={updatesData} />
+    </div>
   );
 };
 
-export default page;
+export default Page;

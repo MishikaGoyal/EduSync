@@ -7,7 +7,7 @@ export default function Navbar() {
   const menuItems = [
     {
       name: "Schools",
-      href: "/admin/school-structure",
+      href: "/admin/schools",
       icon: <FaHome />,
     },
     { name: "Check  Updates", href: "/admin/updates" },

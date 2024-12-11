@@ -56,22 +56,6 @@ const Page = () => {
         );
       }
 
-      if (filters.category) {
-        filtered = filtered.filter(
-          (school) =>
-            school.School_Category.toLowerCase() ===
-            filters.category.toLowerCase()
-        );
-      }
-
-      if (filters.schoolType) {
-        filtered = filtered.filter(
-          (school) =>
-            school.School_Type.toLowerCase() ===
-            filters.schoolType.toLowerCase()
-        );
-      }
-
       if (filters.search) {
         filtered = filtered.filter((school) =>
           school.UDISE_CODE.toString()
@@ -108,6 +92,17 @@ const Page = () => {
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-8 justify-center">
+          <div className="relative">
+            <input
+              type="text"
+              name="search"
+              value={filters.search}
+              onChange={handleFilterChange}
+              placeholder="Search by UDISE Code"
+              className="px-4 py-2 border rounded-md text-gray-600"
+            />
+            <span className="absolute top-2 right-3 text-gray-400">🔍</span>
+          </div>
           <div>
             <select
               name="state"
@@ -125,53 +120,8 @@ const Page = () => {
               )}
             </select>
           </div>
-          <div>
-            <select
-              name="category"
-              value={filters.category}
-              onChange={handleFilterChange}
-              className="px-4 py-2 border rounded-md text-gray-600"
-            >
-              <option value="">Filter by Category</option>
-              {[
-                ...new Set(schools.map((school) => school.School_Category)),
-              ].map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <select
-              name="schoolType"
-              value={filters.schoolType}
-              onChange={handleFilterChange}
-              className="px-4 py-2 border rounded-md text-gray-600"
-            >
-              <option value="">Filter by School Type</option>
-              {[...new Set(schools.map((school) => school.School_Type))].map(
-                (type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
 
           {/* Search */}
-          <div className="relative">
-            <input
-              type="text"
-              name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
-              placeholder="Search by UDISE Code"
-              className="px-4 py-2 border rounded-md text-gray-600"
-            />
-            <span className="absolute top-2 right-3 text-gray-400">🔍</span>
-          </div>
         </div>
 
         {/* Table */}

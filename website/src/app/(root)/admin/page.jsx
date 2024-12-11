@@ -179,15 +179,17 @@ export default function AdminPage() {
                   {feature.description}
                 </p>
 
-                {/* Button Below the Description */}
-                <div className="mt-4 ml-24">
-                  <button
-                    className="btn btn-primary w-[150px]"
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    Check Now
-                  </button>
-                </div>
+                {/* Button Below the Description (only for the first feature) */}
+                {i === 0 && (
+                  <div className="mt-4 ml-24">
+                    <button
+                      className="btn btn-primary w-[150px]"
+                      onClick={() => setIsModalOpen(true)}
+                    >
+                      Check Now
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}

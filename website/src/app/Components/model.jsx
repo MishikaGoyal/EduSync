@@ -4,6 +4,7 @@ import { PinContainer } from "@/components/ui/3d-pin";
 import Image from "next/image";
 import { IoIosArrowDropdown } from "react-icons/io";
 
+
 export function AnimatedPinDemo({ title, href, imageSrc }) {
   return (
     <div className="h-[30rem] w-[400px] flex items-center justify-center edu-au-vic-wa-nt-arrows-text">

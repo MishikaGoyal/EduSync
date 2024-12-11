@@ -5,7 +5,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import Navbar1 from "@/app/Components/NavbarAdmin";
 import Footer from "@/app/Components/Footer";
 import Chatbot from "@/app/Components/Chatbot";
-import { AnimatedPinDemo } from "@/app/components/model";
+import { AnimatedPinDemo } from "@/app/Components/model";
 import Navbar from "@/app/Components/NavbarAdmin";
 import Link from "next/link";
 

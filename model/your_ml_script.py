@@ -48,14 +48,26 @@ def extract_data_from_pdf(pdf_path):
         for page in reader.pages:
             text += page.extract_text()
 
+    VALID_STATES = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+    "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
+    "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
+    "Tamilnadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
+    "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir",
+    "Ladakh", "Lakshadweep", "Puducherry"
+    ]
+
     patterns = {
         "UDISE CODE": r'UDISE CODE\s*:\s*(\d{2}\s+\d{2}\s+\d{2}\s+\d{2}\s+\d{3})',
         "School Name": r'School Name\s*:\s*(.+)',
-        "State": r'State\s+([A-Za-z]+)',
+        "State": r'State\s+([A-Za-z\s]+)',
         "School Category": r'School Category\s*(\d+)',  
         "School Management": r'School Management\s*(\d+)',
         "School Type": r'School Type\s*(\d+)',  
         "Grade Configuration": r'Lowest & Highest Class\s*(\d+)\s*-\s*(\d+)',  
+        "Is Special School for CWSN": r"Is Special School for CWSN\?\s*(\d+)-",
         "Year of Establishment": r'Year of Establishment\s*(\d{4})',
         "Boundary Wall": r'Boundary wall\s*(\d+)',
         "Total Class Rooms": r'Total Class Rooms\s*(\d+)',
@@ -66,7 +78,7 @@ def extract_data_from_pdf(pdf_path):
         "Electricity Availability": r'Electricity Availability\s*(\d+)',
         "Total Teachers": r'Total\s*(\d+)\s*',
         "Total Washrooms": r'Total\(Excluding CWSN\)\s*(\d+)\s*(\d+)',
-        "CWSN": r'Cwsn*\s(\d+)(?:\s|$)',
+        "Func. CWSN Friendly": r"Func\. CWSN Friendly\s*(\d+)\s+(\d+)",
         "Total Students": r'G\.Tot.*\s(\d+)(?:\s|$)'
     }
 
@@ -79,14 +91,27 @@ def extract_data_from_pdf(pdf_path):
                 parsed_data["Grade Configuration"] = f"({match.group(1)},{match.group(2)})"
             elif key == "Total Washrooms":
                 parsed_data["Total Washrooms"] = f"({match.group(1)},{match.group(2)})"
+            elif key == "Func. CWSN Friendly":
+                boys, girls = f"({match.group(1)}, {match.group(2)})"
+                parsed_data[key] = 1 if boys + girls > 0 else 0
+            elif key == "Is Special School for CWSN":
+                parsed_data[key] = 1 if match.group(1).strip() == "1" else 2
             else:
                 parsed_data[key] = match.group(1)
+    
+    text_lines=text.split('\n')
+    parsed_data["State"] = next(
+                (state for line in text_lines for state in VALID_STATES if state.lower() in line.lower()),
+                None
+            )
     
     df = pd.DataFrame([parsed_data])
 
     # Apply the same conversion logic used in the training set
     df = df.map(convert_range_to_numeric)
     df = df.apply(pd.to_numeric, errors='coerce').fillna(0)
+    print(df,"\n")
+    print(parsed_data)
 
     return df, parsed_data
 
@@ -128,7 +153,7 @@ def reasons(record):
         lists.append('There should be a playground.')
     if (electricity_availability != 1 ):
         lists.append('Electricity should be available.')
-    if (total_students <= total_classrooms * 45):
+    if (total_students >= total_classrooms * 45):
         s=  f'Each class must accomodate maximum of 45 students. You have {total_students} students and only {total_classrooms} classrooms.'
         lists.append(s)
     if (len(lists)==0):

@@ -14,9 +14,9 @@ load_dotenv()
 api_key = os.getenv("api_key")
 genai.configure(api_key=api_key)
 
-model = joblib.load('model/school_result_model.pkl')
+model = joblib.load('school_result_model.pkl')
 
-app.config['UPLOAD_FOLDER'] = 'EduSync/uploads/'
+app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
@@ -79,19 +79,22 @@ def generate_guidance():
 
     reason = reasons(full_data)
 
+    state=full_data['State']
+
     if not full_data:
         return jsonify({"error": "No data provided"}), 400
 
-    prompt_header = '''
+    prompt_header = f'''
     You are an AI assistant helping school principals in India align their schools with the Samagra Shiksha Framework and the New Education Policy (NEP), use data from these policies as well as other policies, and use correct data only.
 
     Objective: When provided with the reason for being classified as an "odd" structure, generate a clear, actionable guidance message. The message should provide solutions based on government policies and available resources. If the school is standard, then just output that the school is standard.
 
     "Guidance Message Structure:"
+    State based Requirements: Identify state-wise issues affecting the operation of schools in terms of commute, infrastructure, and climatic conditions. For each issue identified, provide practical solutions tailored to the specific challenges of the state {state}.
+
     Comparison to Standards: Highlight the exact differences based on policy benchmarks.
     
     Action Plan:
-    
     Immediate Actions: Suggest specific steps to align with Samagra Shiksha or NEP standards.
     Resource Use: Identify precise and correct government schemes or grants to standardize the school.
 

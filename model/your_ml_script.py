@@ -36,7 +36,7 @@ def check_conditions(record):
     (drinking_water_available != 1)or
     (playground_available != 1 )or
     (electricity_availability != 1 )or
-    (total_students <= total_classrooms * 45)):
+    (total_students >= total_classrooms * 45)):
         return "ODD"
     else:
         return "Standard"

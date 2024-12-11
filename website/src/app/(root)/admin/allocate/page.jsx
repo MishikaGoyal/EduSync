@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react';
-import { Navbar } from '@/app/RequestComponent/ui/Navbar';
 import { SchoolSearch } from '@/app/RequestComponent/SchoolSearch';
 import { SchoolList } from '@/app/RequestComponent/SchoolList';
 import { ResourceDetails } from '@/app/RequestComponent/ResourceDetails';
-import { mockSchools } from './utils/mockData';
+import { mockSchools } from '@/lib/mockData';
+import Navbar from '@/app/Components/NavbarAdmin';
 
 function Page() {
   const [schools, setSchools] = useState(mockSchools);
@@ -44,10 +44,10 @@ function Page() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar/>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Resource Management Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center"> Admin Resource Management Dashboard</h1>
           <SchoolSearch
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}

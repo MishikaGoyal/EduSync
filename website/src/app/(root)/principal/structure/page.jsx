@@ -101,11 +101,11 @@ export default function SchoolDashboard() {
           </div>
           <div className="p-6">
             <div className="mb-4 flex justify-between">
-              <h2 className="text-2xl font-bold text-blue-700">
-                Your school is {schoolData?.Result}
+              <h2 className="text-2xl font-bold text-blue-500">
+                {schoolData?.School_Name}
               </h2>
-              <h2 className="text-xl font-semibold text-gray-600">
-                UDISE Code: {schoolData?.UDISE_CODE}
+              <h2 className="text-2xl font-bold text-blue-500">
+                {schoolData?.UDISE_CODE}
               </h2>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -127,12 +127,12 @@ export default function SchoolDashboard() {
               <StatCard
                 title="Classrooms"
                 value={schoolData?.Total_Class_Rooms}
-                color="text-yellow-500"
+                color="text-blue-500"
               />
               <StatCard
                 title="Grades"
                 value={schoolData?.Grade_Configuration}
-                color="text-purple-500"
+                color="text-blue-500"
               />
               <FacilityCard
                 title="Library"
@@ -157,35 +157,38 @@ export default function SchoolDashboard() {
               <StatCard
                 title="Male-Female Washrooms"
                 value={schoolData?.Total_Washrooms}
-                color="text-purple-500"
+                color="text-blue-500"
               />
 
               <StatCard
                 title="Severity"
                 value={schoolData?.Severity}
-                color="text-purple-500"
+                color="text-blue-500"
               />
             </div>
           </div>
-        </div>
-        <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-6 border-b bg-blue-50">
-            <h3 className="text-2xl font-bold text-blue-800">Analysis</h3>
+          <div
+            className={`${
+              schoolData?.Result === "ODD" ? "text-red-500" : " text-green-500"
+            } font-bold text-2xl text-center border py-5 px-2 m-5 rounded-lg shadow-md`}
+          >
+            Your School is {schoolData?.Result}
           </div>
-          <div className="p-6">
+        </div>
+
+        <div className="mb-8 bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-4 border-b">
+            <h3 className="text-xl font-bold text-blue-700">Analysis</h3>
+          </div>
+          <div className="p-4">
             {reason && (
-              <div className="mb-8">
-                <h3 className="mb-4 text-xl font-semibold text-gray-800">
+              <div className="mb-6">
+                <h3 className="mb-2 text-lg font-semibold text-gray-700">
                   Reasons for Classification:
                 </h3>
-                <ul className="list-inside list-disc space-y-3 text-gray-700">
+                <ul className="list-inside list-disc space-y-2 text-gray-600">
                   {reason.map((item, index) => (
-                    <li
-                      key={index}
-                      className="hover:text-blue-600 transition-colors"
-                    >
-                      {item}
-                    </li>
+                    <li key={index}>{item}</li>
                   ))}
                 </ul>
               </div>

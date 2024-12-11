@@ -5,7 +5,9 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import Navbar1 from "@/app/Components/NavbarAdmin";
 import Footer from "@/app/Components/Footer";
 import Chatbot from "@/app/Components/Chatbot";
-import {AnimatedPinDemo} from "@/app/components/model"
+import { AnimatedPinDemo } from "@/app/components/model";
+import Navbar from "@/app/Components/NavbarAdmin";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -92,10 +94,10 @@ export default function AdminPage() {
   const features = [
     {
       imageSrc: "/img7.jpg",
-      headline: "Manage Resources",
-     
+      headline: "Check Structure",
+      href: "/admin/school-structure",
       description:
-        "This feature empowers administrators to efficiently handle school resources such as classrooms, facilities, and supplies. It enables optimal allocation and utilization of available resources, ensuring that no resources are wasted and all schools are adequately equipped to meet their needs. With this tool, schools can better manage their infrastructure, resulting in improved educational outcomes.",
+        "Check School Structure feature leverages a machine learning model to analyze and categorize schools into two distinct categories: Odd and Standard. This categorization is based on various critical parameters such as the total number of classrooms, teacher-student ratio, library and drinking water availability,  The ML model processes the data to identify schools that deviate significantly from typical structural (Odd) and those . This feature enables education administrators to pinpoint schools needing immediate attention or intervention and make data-driven decisions to improve infrastructure, resource allocation.",
     },
     {
       imageSrc: "/img8.jpg",
@@ -113,7 +115,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen">
-      <Navbar1 text={"ADMIN"} />
+      <Navbar />
       <main className="min-h-screen px-8 py-12 mt-4">
         {/* Hero Section */}
         <section
@@ -155,12 +157,16 @@ export default function AdminPage() {
             >
               {/* Image with navigation indicator and tooltip */}
               <div className="relative group">
-                <AnimatedPinDemo
-                  title={feature.title}
-                  href={feature.href}
-                  imageSrc={feature.imageSrc}
-                  className="transition-transform duration-300 hover:scale-105"
-                />
+                <Link href="/admin/school-structure">
+                  {" "}
+                  <AnimatedPinDemo
+                    title={feature.title}
+                    href={feature.href}
+                    imageSrc={feature.imageSrc}
+                    className="transition-transform duration-300 hover:scale-105"
+                  />
+                </Link>
+
                 {/* Tooltip */}
               </div>
 

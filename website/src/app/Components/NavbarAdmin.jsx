@@ -5,10 +5,13 @@ import SignoutButton from "./SignoutButton";
 
 export default function Navbar() {
   const menuItems = [
-    { name: "Know Structure", href: "/principal/structure", icon: <FaHome /> },
-    { name: "Make Updates", href: "/principal/Progress" },
-    { name: "Check Resources", href: "/principal/algorithm" },
-    { name: "Guidelines", href: "/principal/Guidelines" },
+    {
+      name: "Schools",
+      href: "/admin/school-structure",
+      icon: <FaHome />,
+    },
+    { name: "Check  Updates", href: "/admin/updates" },
+    { name: "Allocate Resource", href: "/admin/allocate" },
   ];
 
   return (
@@ -22,9 +25,7 @@ export default function Navbar() {
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-purple-200 to-purple-300">
             <FaHome className="text-blue-950" />
           </span>
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-            
-          </span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500"></span>
         </Link>
 
         {/* Navigation Links */}

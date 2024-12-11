@@ -168,20 +168,24 @@ export default function SchoolDashboard() {
             </div>
           </div>
         </div>
-
-        <div className="mb-8 bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-blue-700">Analysis</h3>
+        <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6 border-b bg-blue-50">
+            <h3 className="text-2xl font-bold text-blue-800">Analysis</h3>
           </div>
-          <div className="p-4">
+          <div className="p-6">
             {reason && (
-              <div className="mb-6">
-                <h3 className="mb-2 text-lg font-semibold text-gray-700">
+              <div className="mb-8">
+                <h3 className="mb-4 text-xl font-semibold text-gray-800">
                   Reasons for Classification:
                 </h3>
-                <ul className="list-inside list-disc space-y-2 text-gray-600">
+                <ul className="list-inside list-disc space-y-3 text-gray-700">
                   {reason.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li
+                      key={index}
+                      className="hover:text-blue-600 transition-colors"
+                    >
+                      {item}
+                    </li>
                   ))}
                 </ul>
               </div>

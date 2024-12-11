@@ -12,6 +12,7 @@ export default function Navbar() {
     },
     { name: "Check  Updates", href: "/admin/updates" },
     { name: "Allocate Resource", href: "/admin/allocate" },
+    {name :"Dashboard", href: "/admin/dashboard"}
   ];
 
   return (

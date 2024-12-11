@@ -1,16 +1,62 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import Navbar1 from "@/app/Components/NavbarAdmin";
-import Link from "next/link";
-import Image from "next/image";
 import Footer from "@/app/Components/Footer";
 import Chatbot from "@/app/Components/Chatbot";
+import {AnimatedPinDemo} from "@/app/components/model"
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function AdminPage() {
-  const [selectedSchool, setSelectedSchool] = useState(null);
+  const featureRefs = useRef([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    // Hero animations
+    gsap.fromTo(
+      "#heroHeadline",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, delay: 0.2, ease: "power4.out" }
+    );
+
+    gsap.fromTo(
+      "#heroDescription",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, delay: 0.4, ease: "power4.out" }
+    );
+
+    gsap.fromTo(
+      "#ctaButton",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, delay: 0.6, ease: "power4.out" }
+    );
+  }, []);
+
+  useEffect(() => {
+    // Animate features on scroll
+    featureRefs.current.forEach((feature, index) => {
+      gsap.fromTo(
+        feature,
+        { opacity: 0, y: 100, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: feature,
+            start: "top 90%",
+            end: "top 70%",
+            scrub: true,
+          },
+        }
+      );
+    });
+  }, []);
 
   const handleFileChange = (event) => setFile(event.target.files[0]);
 
@@ -31,209 +77,132 @@ export default function AdminPage() {
       });
       const responseData = await response.json();
       setIsModalOpen(false);
-      console.log(responseData);
       if (responseData.flag === false) {
         alert("Data already exists");
       } else if (responseData.flag === true) {
-        alert("Data added succesfully");
+        alert("Data added successfully");
       } else {
-        alert("Error is uploading data");
+        alert("Error uploading data");
       }
     } catch (error) {
       console.error(error);
     }
   };
-  return (
-    <div className="min-w-max">
-      <div>
-        <Navbar1 text={"ADMIN"} />
-        <div className="flex flex-col md:flex-row items-center justify-evenly mt-12 space-y-4 md:space-y-0 md:space-x-8">
-          <h1 className="tracking-in-expand-fwd text-xl font-extrabold text-center md:text-left">
-            Manage School Resources & Requests Efficiently
-          </h1>
-          <Image
-            src="/img11.jpg"
-            width={400}
-            height={200}
-            className="rounded-xl shadow-black"
-          />
-        </div>
 
-        {/* School Structure Section */}
-        <div
-          id="structure"
-          className="flex flex-col md:flex-row items-start justify-evenly mt-8 mb-4 p-4 bg-gray-200 shadow-lg rounded-lg border border-gray-200 w-[90%] mx-auto"
+  const features = [
+    {
+      imageSrc: "/img7.jpg",
+      headline: "Manage Resources",
+     
+      description:
+        "This feature empowers administrators to efficiently handle school resources such as classrooms, facilities, and supplies. It enables optimal allocation and utilization of available resources, ensuring that no resources are wasted and all schools are adequately equipped to meet their needs. With this tool, schools can better manage their infrastructure, resulting in improved educational outcomes.",
+    },
+    {
+      imageSrc: "/img8.jpg",
+      headline: "Review Updates",
+      description:
+        " Staying informed about ongoing changes and updates is crucial for effective school management. This feature allows administrators to review all submitted updates related to infrastructure, resource requirements, or operational changes. It ensures that schools remain transparent and accountable while giving administrators a comprehensive view of ongoing activities..",
+    },
+    {
+      imageSrc: "/img9.jpg",
+      headline: "Allocate Resources",
+      description:
+        "With real-time data and analytics, this feature allows administrators to quickly allocate requested resources to schools. It prioritizes resource distribution based on immediate needs, ensuring that schools in critical need receive timely assistance. This functionality minimizes delays and maximizes the impact of resource allocation efforts.",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen">
+      <Navbar1 text={"ADMIN"} />
+      <main className="min-h-screen px-8 py-12 mt-4">
+        {/* Hero Section */}
+        <section
+          id="heroSection"
+          className="relative bg-gradient-to-r from-purple-100 to-blue-100 text-white py-20 px-8 rounded-lg shadow-xl overflow-hidden"
         >
-          <div className="card bg-base-100 image-full w-full md:w-[400px] h-[280px] shadow-xl rounded-lg">
-            <figure className="relative w-full h-full">
-              <img
-                src="/img7.jpg"
-                alt="School Structure"
-                className="w-full h-full object-cover rounded-t-lg"
-              />
-            </figure>
-            <div className="card-body p-4">
-              <h2 className="card-title text-xl font-semibold">
-                Check School Structure
-              </h2>
-              <button
-                className="btn btn-primary mt-4 w-[150px]"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Check Now
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-0 w-92 h-68 bg-purple-200 rounded-full blur-[100px] opacity-30"></div>
+            <div className="absolute bottom-0 right-0 w-72 h-58 bg-blue-200 rounded-full blur-[80px] opacity-20"></div>
+          </div>
+
+          <div className="relative z-10 text-center max-w-3xl mx-auto">
+            <h1
+              id="heroHeadline"
+              className="ubuntu-bold-italic text-6xl mb-6 leading-tight tracking-wide text-blue-950"
+            >
+              Welcome to the <br />
+              <span className="text-blue-950 ubuntu-bold-italic">
+                Admin Dashboard
+              </span>
+            </h1>
+            <p
+              id="heroDescription"
+              className="work-sans-text text-xl max-w-3xl mx-auto leading-relaxed mb-8 text-blue-400 font-semibold"
+            >
+              A robust platform to manage resources, review updates, and make
+              impactful decisions for schools.
+            </p>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="featuresSection" className="mt-16 space-y-12">
+          {features.map((feature, i) => (
+            <div
+              key={i}
+              ref={(el) => (featureRefs.current[i] = el)}
+              className="bg-white rounded-lg shadow-lg p-6 max-w-6xl max-h-[450px] mx-auto flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 transform transition-transform duration-300 hover:scale-105 shadow-md shadow-violet-300"
+            >
+              {/* Image with navigation indicator and tooltip */}
+              <div className="relative group">
+                <AnimatedPinDemo
+                  title={feature.title}
+                  href={feature.href}
+                  imageSrc={feature.imageSrc}
+                  className="transition-transform duration-300 hover:scale-105"
+                />
+                {/* Tooltip */}
+              </div>
+
+              {/* Title and Description */}
+              <div className="max-w-md ">
+                <h2 className="text-2xl ml-24  ubuntu-bold-italic font-semibold text-blue-950 mb-2 border-b-4 border-black pb-2 inline-block">
+                  {feature.headline}
+                </h2>
+
+                <p className="text-gray-700 text-sm ml-24 justify-left text-left">
+                  {feature.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </section>
+      </main>
+
+      {/* File Upload Modal */}
+      {isModalOpen && (
+        <dialog className="modal" open>
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Submit Report</h3>
+            <input
+              type="file"
+              className="file-input file-input-bordered w-full max-w-xs mt-4"
+              onChange={handleFileChange}
+            />
+            <div className="modal-action">
+              <button className="btn" onClick={handleSubmit}>
+                Submit
+              </button>
+              <button className="btn" onClick={() => setIsModalOpen(false)}>
+                Close
               </button>
             </div>
           </div>
+        </dialog>
+      )}
 
-          <div className="w-full md:w-[600px] p-4">
-            <p className="text-md text-left leading-relaxed">
-              This section allows admins to review the overall structure of each
-              school, including classroom facilities, infrastructure, and other
-              key attributes. Keeping track of these details helps ensure each
-              school is up to standard.
-            </p>
-          </div>
-        </div>
-
-        {/* File Upload Modal */}
-        {isModalOpen && (
-          <dialog className="modal" open>
-            <div className="modal-box">
-              <h3 className="font-bold text-lg">Submit Report</h3>
-              <input
-                type="file"
-                className="file-input file-input-bordered w-full max-w-xs mt-[20px]"
-                onChange={handleFileChange}
-              />
-              <div className="modal-action">
-                <Link href="/admin/schools">
-                  {" "}
-                  <button className="btn" onClick={handleSubmit}>
-                    Submit
-                  </button>
-                </Link>
-                <button className="btn" onClick={() => setIsModalOpen(false)}>
-                  Close
-                </button>
-              </div>
-            </div>
-          </dialog>
-        )}
-
-        {/* Review Updates Section */}
-        <div
-          id="updates"
-          className="flex flex-col md:flex-row items-center justify-evenly p-4 mb-4 shadow-lg rounded-lg bg-gray-200 w-[90%] mx-auto"
-        >
-          <div className="w-full md:w-[600px] p-4">
-            <p className="text-md leading-relaxed">
-              The "Review Updates" feature lets admins oversee changes submitted
-              by school principals, including updates to infrastructure, staff,
-              and facilities. These changes are critical for maintaining
-              up-to-date records.
-            </p>
-          </div>
-
-          <div className="card bg-base-100 image-full w-full md:w-[400px] h-[280px] shadow-xl rounded-xl">
-            <figure>
-              <img
-                src="/img8.jpg"
-                alt="Review Updates"
-                className="w-full h-full object-cover"
-              />
-            </figure>
-            <div className="card-body flex flex-col justify-between h-1/3 p-4">
-              <h2 className="card-title text-xl font-semibold">View Updates</h2>
-              <p className="mt-2 text-sm">
-                Stay updated on the latest changes made by principals and
-                approve or review them accordingly.
-              </p>
-              <div className="card-actions mt-auto flex justify-end">
-                <Link href="/admin/updates">
-                  <button className="btn btn-primary">Review Now</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Allocate Resources Section */}
-        <div
-          id="resources"
-          className="flex flex-col md:flex-row items-start justify-evenly p-4 mb-4 bg-gray-200 shadow-lg rounded-lg border border-gray-200 w-[90%] mx-auto"
-        >
-          <div className="card bg-base-100 image-full w-full md:w-[400px] h-[280px] shadow-xl rounded-xl overflow-hidden">
-            <figure className="relative w-full h-full">
-              <img
-                src="/img9.jpg"
-                alt="Allocate Resources"
-                className="w-full h-[150px] object-cover"
-              />
-            </figure>
-            <div className="card-body flex flex-col h-full p-4">
-              <h2 className="card-title text-xl font-semibold">
-                Allocate Resources
-              </h2>
-              <p className="mt-4 text-sm">
-                Manage and allocate resources based on requests from schools to
-                ensure they get what they need.
-              </p>
-              <div className="card-actions mt-auto flex justify-end">
-                <Link href="/admin/resource-allocation">
-                  <button className="btn btn-primary">Allocate Now</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full md:w-[600px] p-4">
-            <p className="text-md text-left leading-relaxed">
-              The resource allocation tool helps admins distribute essential
-              materials and resources to schools based on their needs and
-              requests. This ensures transparency and efficient management of
-              resources.
-            </p>
-          </div>
-        </div>
-
-        {/* View Requests Section */}
-        <div
-          id="requests"
-          className="flex flex-col md:flex-row items-center justify-evenly p-4 mb-4 shadow-lg rounded-lg bg-gray-200 w-[90%] mx-auto"
-        >
-          <div className="w-full md:w-[600px] flex items-center">
-            <p className="text-md leading-relaxed">
-              The "Show School Data" feature enables admins to monitor all the
-              schools added in the database previously.
-            </p>
-          </div>
-
-          <div className="card bg-base-100 image-full w-full md:w-[400px] h-[280px] shadow-xl rounded-xl overflow-hidden">
-            <figure>
-              <img
-                src="/img10.jpg"
-                alt="View Requests"
-                className="w-full h-full object-cover"
-              />
-            </figure>
-            <div className="card-body flex flex-col justify-between h-1/3 p-4">
-              <h2 className="card-title text-xl font-semibold">
-                All School Data
-              </h2>
-              <p className="mt-2 text-sm">
-                See The Data of All Schools in the Database
-              </p>
-              <div className="card-actions mt-auto flex justify-end">
-                <Link href="/admin/schools">
-                  <button className="btn btn-primary">View Now</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <Chatbot />
-      <Footer className="mt-[10px]" />
+      <Footer />
     </div>
   );
 }

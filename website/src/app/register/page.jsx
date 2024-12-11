@@ -1,7 +1,9 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const RegisterPage = () => {
+  const router = useRouter(null);
   const [role, setRole] = useState("parent");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,14 +35,20 @@ const RegisterPage = () => {
       body: JSON.stringify({
         loginId: username,
         password: password,
+        role: role,
       }),
     });
-    console.log({
-      role,
-      username,
-      password,
-      confirmPassword,
-    });
+
+    const resData = await response.json();
+    if (resData.flag === false) {
+      alert("User Already Exists, Try loggin in");
+      router.push("/login");
+    } else if (resData.flag === true) {
+      alert("User created succesfully , try loggin In");
+      router.push("/login");
+    } else {
+      alert("Internal Server Error");
+    }
   };
 
   return (

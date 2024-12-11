@@ -34,7 +34,7 @@ export async function middleware(req) {
 
 export const config = {
   matcher: [
-    "/api/:path((?!login$).*)",
+    "/api/:path((?!login$|register$).*)",
     "/protected:path*",
     "/principal:path*",
     "/admin:path*",

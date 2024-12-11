@@ -10,11 +10,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",
-<<<<<<< HEAD
     "@radix-ui/react-label": "^2.1.0",
-=======
     "@radix-ui/react-dialog": "^1.1.2",
->>>>>>> 673ceba0 (feat:added admin resource monitors)
     "@radix-ui/react-progress": "^1.1.0",
     "autoprefixer": "^10.4.20",
     "@radix-ui/react-select": "^2.1.2",

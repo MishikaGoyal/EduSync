@@ -36,7 +36,7 @@ def check_conditions(record):
     (drinking_water_available != 1)or
     (playground_available != 1 )or
     (electricity_availability != 1 )or
-    (total_students <= total_classrooms * 45)):
+    (total_students >= total_classrooms * 50)):
         return "ODD"
     else:
         return "Standard"
@@ -153,7 +153,7 @@ def reasons(record):
         lists.append('There should be a playground.')
     if (electricity_availability != 1 ):
         lists.append('Electricity should be available.')
-    if (total_students >= total_classrooms * 45):
+    if (total_students >= total_classrooms * 50):
         s=  f'Each class must accomodate maximum of 45 students. You have {total_students} students and only {total_classrooms} classrooms.'
         lists.append(s)
     if (len(lists)==0):
@@ -197,7 +197,7 @@ def severity_calculation(record):
         severity+=1
     if (electricity_availability != 1 ):
         severity+=2
-    if (total_students <= total_classrooms * 45):
+    if (total_students >= total_classrooms * 50):
         severity+=3
     
     return severity

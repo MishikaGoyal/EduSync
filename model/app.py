@@ -14,7 +14,7 @@ load_dotenv()
 api_key = os.getenv("api_key")
 genai.configure(api_key=api_key)
 
-model = joblib.load('school_result_model.pkl')
+model = joblib.load('model/school_result_model.pkl')
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 

@@ -97,17 +97,19 @@ export default function AdminPage() {
       headline: "Check Structure",
       href: "/admin/school-structure",
       description:
-        "Check School Structure feature leverages a machine learning model to analyze and categorize schools into two distinct categories: Odd and Standard. This categorization is based on various critical parameters such as the total number of classrooms, teacher-student ratio, library and drinking water availability,  The ML model processes the data to identify schools that deviate significantly from typical structural (Odd) and those . This feature enables education administrators to pinpoint schools needing immediate attention or intervention and make data-driven decisions to improve infrastructure, resource allocation.",
+        "Check School Structure feature leverages a machine learning model to analyze and categorize schools into two distinct categories: Odd and Standard. This categorization is based on various critical parameters such as the total number of classrooms, teacher-student ratio, library and drinking water availability,  The ML model processes the data to identify schools that deviate significantly from typical structural (Odd) . This feature enables education administrators to pinpoint schools needing immediate attention and make data-driven decisions to improve infrastructure, resource allocation.",
     },
     {
       imageSrc: "/img8.jpg",
       headline: "Review Updates",
+      href: "/admin/updates",
       description:
         " Staying informed about ongoing changes and updates is crucial for effective school management. This feature allows administrators to review all submitted updates related to infrastructure, resource requirements, or operational changes. It ensures that schools remain transparent and accountable while giving administrators a comprehensive view of ongoing activities..",
     },
     {
       imageSrc: "/img9.jpg",
       headline: "Allocate Resources",
+      href: "/admin/allocate",
       description:
         "With real-time data and analytics, this feature allows administrators to quickly allocate requested resources to schools. It prioritizes resource distribution based on immediate needs, ensuring that schools in critical need receive timely assistance. This functionality minimizes delays and maximizes the impact of resource allocation efforts.",
     },
@@ -155,30 +157,37 @@ export default function AdminPage() {
               ref={(el) => (featureRefs.current[i] = el)}
               className="bg-white rounded-lg shadow-lg p-6 max-w-6xl max-h-[450px] mx-auto flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 transform transition-transform duration-300 hover:scale-105 shadow-md shadow-violet-300"
             >
-              {/* Image with navigation indicator and tooltip */}
+              {/* Image with navigation indicator */}
               <div className="relative group">
-                <Link href="/admin/school-structure">
-                  {" "}
-                  <AnimatedPinDemo
-                    title={feature.title}
-                    href={feature.href}
-                    imageSrc={feature.imageSrc}
-                    className="transition-transform duration-300 hover:scale-105"
-                  />
-                </Link>
-
-                {/* Tooltip */}
+                <AnimatedPinDemo
+                  title={feature.title}
+                  href={feature.href}
+                  imageSrc={feature.imageSrc}
+                  className="transition-transform duration-300 hover:scale-105"
+                />
               </div>
 
-              {/* Title and Description */}
-              <div className="max-w-md ">
-                <h2 className="text-2xl ml-24  ubuntu-bold-italic font-semibold text-blue-950 mb-2 border-b-4 border-black pb-2 inline-block">
+              {/* Title, Description, and Button */}
+              <div className="max-w-md">
+                {/* Feature Headline */}
+                <h2 className="text-2xl ml-24 ubuntu-bold-italic font-semibold text-blue-950 mb-2 border-b-4 border-black pb-2 inline-block">
                   {feature.headline}
                 </h2>
 
+                {/* Feature Description */}
                 <p className="text-gray-700 text-sm ml-24 justify-left text-left">
                   {feature.description}
                 </p>
+
+                {/* Button Below the Description */}
+                <div className="mt-4 ml-24">
+                  <button
+                    className="btn btn-primary w-[150px]"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Check Now
+                  </button>
+                </div>
               </div>
             </div>
           ))}

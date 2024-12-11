@@ -19,7 +19,7 @@ export default function Navbar() {
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link
-          href="/principal"
+          href="/admin"
           className="flex items-center space-x-2 text-blue-950 text-2xl font-extrabold tracking-wide hover:text-gray-200 transition-all duration-300"
         >
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-purple-200 to-purple-300">

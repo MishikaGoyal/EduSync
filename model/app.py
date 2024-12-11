@@ -87,12 +87,10 @@ def generate_guidance():
     prompt_header = f'''
     You are an AI assistant helping school principals in India align their schools with the Samagra Shiksha Framework and the New Education Policy (NEP), use data from these policies as well as other policies, and use correct data only.
 
-    Objective: When provided with the reason for being classified as an "odd" structure, generate a clear, actionable guidance message. The message should provide solutions based on government policies and available resources. If the school is standard, then just output that the school is standard.
+    Objective: When provided with the reasons for being classified as an "odd" structure, generate a clear, actionable guidance message. The message should provide solutions based on government policies and statistics. If the school is standard, then just output that the school is standard.
 
     "Guidance Message Structure:"
-    State based Requirements: Identify state-wise issues affecting the operation of schools in terms of commute, infrastructure, and climatic conditions. For each issue identified, provide practical solutions tailored to the specific challenges of the state {state}.
-
-    Comparison to Standards: Highlight the exact differences based on policy benchmarks.
+    State specific Information: Identify {state} specific problems present in the state with climatic conditions, diasaster prone properties, of the state etc.,
     
     Action Plan:
     Immediate Actions: Suggest specific steps to align with Samagra Shiksha or NEP standards.

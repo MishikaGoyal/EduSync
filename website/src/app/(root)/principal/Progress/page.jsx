@@ -1,255 +1,247 @@
 "use client";
 
-import Navbar from "@/app/Components/NavbarPrincipal";
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
-export default function UpdateSchool() {
-  const sendUpdate = async () => {
-    const response = await fetch("/api/update", {
-      headers: { "Content-type": "application/json" },
-      cache: "no-store",
-      method: "POST",
-      body: JSON.stringify(formData),
-    });
-    const resData = await response.json();
-    if (!response.ok) {
-      console.error("Error in submitting form");
-      alert("Error in submitting data");
-    } else if (resData.flag) {
-      alert("Update request submitted succesfully");
-      setFormData({
-        UDISE_CODE: "",
-        State: "",
-        Grade_Configuration: "",
-        Boundary_Wall: false,
-        Total_Class_Rooms: "",
-        Library_Available: false,
-        Separate_Room_for_HM: false,
-        Drinking_Water_Available: false,
-        Playground_Available: false,
-        Electricity_Availability: false,
-        Total_Teachers: "",
-        Total_Washrooms: "",
-        Total_Students: "",
-        Result: "",
-      });
-    } else {
-      alert("Update request is still pending");
-    }
-  };
+const resourceTypes = [
+  { value: "Total_Class_Rooms", label: "Total Class Rooms" },
+  { value: "Total_Teachers", label: "Total Teachers" },
+  { value: "Total_Washrooms", label: "Total Washrooms" },
+  { value: "Total_Students", label: "Total Students" },
+  { value: "Result", label: "Result" },
+];
 
+export default function ResourceManagementDashboard() {
+  const [resources, setResources] = useState([]);
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  // Fetch school data on page load
   useEffect(() => {
-    const code = sessionStorage.getItem("udiseId");
-    if (code) {
-      setFormData((prevData) => ({
-        ...prevData,
-        UDISE_CODE: code,
-      }));
+    async function fetchSchoolData() {
+      try {
+        const response = await fetch("/api/school-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ udiseId: "29  20  01  23  917" }), // Replace with actual UDISE ID
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch school data");
+        }
+
+        const { data } = await response.json();
+        // Transform fetched data into the required structure
+        const formattedResources = Object.entries(data).map(([key, value]) => ({
+          id: key,
+          resource_type: key,
+          previous_value: "0", // Default or derived value
+          new_value: value,
+          description: `${key.replace("_", " ")} details`,
+        }));
+        setResources(formattedResources);
+      } catch (error) {
+        console.error(error);
+      }
     }
+
+    fetchSchoolData();
   }, []);
 
-  const [formData, setFormData] = useState({
-    UDISE_CODE: "",
-    State: "Karnataka",
-    Grade_Configuration: "",
-    Boundary_Wall: false,
-    Total_Class_Rooms: "",
-    Library_Available: false,
-    Separate_Room_for_HM: false,
-    Drinking_Water_Available: false,
-    Playground_Available: false,
-    Electricity_Availability: false,
-    Total_Teachers: "",
-    Total_Washrooms: "",
-    Total_Students: "",
-    Result: "",
-  });
+  const onSubmit = (data) => {
+    setResources((prevResources) => {
+      const existingResourceIndex = prevResources.findIndex(
+        (r) => r.resource_type === data.resource_type
+      );
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      if (existingResourceIndex !== -1) {
+        // Update existing resource
+        const updatedResources = [...prevResources];
+        updatedResources[existingResourceIndex] = {
+          ...updatedResources[existingResourceIndex],
+          previous_value: updatedResources[existingResourceIndex].new_value,
+          new_value: data.new_value,
+          description: data.description,
+        };
+        return updatedResources;
+      } else {
+        // Add new resource
+        return [
+          ...prevResources,
+          {
+            id: Date.now().toString(),
+            resource_type: data.resource_type,
+            previous_value: "0",
+            new_value: data.new_value,
+            description: data.description,
+          },
+        ];
+      }
     });
+
+    reset();
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("File uploaded:", file);
+      // Add your logic to process the file here
+    }
   };
+
+  const graphData = resources
+    .filter((resource) =>
+      [
+        "Total_Class_Rooms",
+        "Total_Teachers",
+        "Total_Washrooms",
+        "Total_Students",
+      ].includes(resource.resource_type)
+    )
+    .map((resource) => ({
+      name:
+        resourceTypes.find((type) => type.value === resource.resource_type)
+          ?.label || resource.resource_type,
+      previous: parseFloat(resource.previous_value) || 0,
+      current: parseFloat(resource.new_value) || 0,
+    }));
 
   return (
-    <>
-      <Navbar />
-   
-    <div className="max-w-3xl mx-auto p-6 bg-gray-50 shadow-md rounded-lg mt-[20px]">
-    
-      <h1 className="text-2xl font-bold mb-4">Update School Information</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <fieldset className="border-t border-gray-200 pt-4">
-          <legend className="text-lg font-semibold">School Information</legend>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">State:</span>
-              <input
-                type="text"
-                name="State"
-                value="Karnataka"
-                className="p-2 border border-gray-300 rounded"
-                disabled
-              />
-            </label>
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">Grade Configuration:</span>
-              <input
-                type="text"
-                name="Grade_Configuration"
-                value={formData.Grade_Configuration}
-                onChange={handleChange}
-                className="p-2 border border-gray-300 rounded"
-                required
-              />
-            </label>
-          </div>
-        </fieldset>
-        <fieldset className="border-t border-gray-200 pt-4">
-          <legend className="text-lg font-semibold">Facilities</legend>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="Boundary_Wall"
-                checked={formData.Boundary_Wall}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span>Boundary Wall</span>
-            </label>
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">Total Class Rooms:</span>
-              <input
-                type="text"
-                name="Total_Class_Rooms"
-                value={formData.Total_Class_Rooms}
-                onChange={handleChange}
-                className="p-2 border border-gray-300 rounded"
-                required
-              />
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="Library_Available"
-                checked={formData.Library_Available}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span>Library Available</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="Separate_Room_for_HM"
-                checked={formData.Separate_Room_for_HM}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span>Separate Room for HM</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="Drinking_Water_Available"
-                checked={formData.Drinking_Water_Available}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span>Drinking Water Available</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="Playground_Available"
-                checked={formData.Playground_Available}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span>Playground Available</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="Electricity_Availability"
-                checked={formData.Electricity_Availability}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span>Electricity Availability</span>
-            </label>
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">Total Teachers:</span>
-              <input
-                type="text"
-                name="Total_Teachers"
-                value={formData.Total_Teachers}
-                onChange={handleChange}
-                className="p-2 border border-gray-300 rounded"
-                required
-              />
-            </label>
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">Total Washrooms:</span>
-              <input
-                type="text"
-                name="Total_Washrooms"
-                value={formData.Total_Washrooms}
-                onChange={handleChange}
-                className="p-2 border border-gray-300 rounded"
-                required
-              />
-            </label>
-          </div>
-        </fieldset>
+    <div className="w-[100%] flex flex-col items-center justify-center px-[15%] p-4">
+      <h1 className="text-3xl font-bold mb-8">Resource Management Dashboard</h1>
 
-        <fieldset className="border-t border-gray-200 pt-4">
-          <legend className="text-lg font-semibold">
-            Student and Result Information
-          </legend>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">Total Students:</span>
-              <input
-                type="text"
-                name="Total_Students"
-                value={formData.Total_Students}
-                onChange={handleChange}
-                className="p-2 border border-gray-300 rounded"
-                required
+      <div className="w-[100%] flex gap-8 flex-col justify-center items-center">
+        <div className="bg-white shadow-md rounded-lg p-6 w-[60%]">
+          <h2 className="text-xl font-semibold mb-4">Update Resource</h2>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label
+                htmlFor="resource_type"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Resource Type
+              </label>
+              <Controller
+                name="resource_type"
+                control={control}
+                rules={{ required: "Resource type is required" }}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  >
+                    <option value="">Select resource type</option>
+                    {resourceTypes.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
               />
-            </label>
-            <label className="flex flex-col">
-              <span className="font-medium mb-1">Status:</span>
-              <input
-                type="text"
-                name="Result"
-                value={formData.Result}
-                onChange={handleChange}
-                className="p-2 border border-gray-300 rounded"
-                required
-              />
-            </label>
-          </div>
-        </fieldset>
+              {errors.resource_type && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.resource_type.message}
+                </p>
+              )}
+            </div>
 
-        <button
-          type="submit"
-          className="mt-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"
-          onClick={sendUpdate}
-        >
-          Send Update Request
-        </button>
-      </form>
+            <div>
+              <label
+                htmlFor="new_value"
+                className="block text-sm font-medium text-gray-700"
+              >
+                New Value
+              </label>
+              <input
+                id="new_value"
+                type="text"
+                {...register("new_value", {
+                  required: "New value is required",
+                })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+              {errors.new_value && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.new_value.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                {...register("description", {
+                  required: "Description is required",
+                })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                rows={3}
+              ></textarea>
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Update Resource
+            </button>
+          </form>
+        </div>
+
+        <div className="bg-white shadow-md rounded-lg p-6 w-[60%]">
+          <h2 className="text-xl font-semibold mb-4">File Upload</h2>
+          <input
+            type="file"
+            onChange={handleFileUpload}
+            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+          />
+        </div>
+
+        <div className="bg-white shadow-md rounded-lg p-6 w-[80%]">
+          <h2 className="text-xl font-semibold mb-4">Resource Overview</h2>
+          <div className="h-96">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={graphData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="current" fill="#82ca9d" name="Current Value" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
     </div>
-    </>
   );
 }

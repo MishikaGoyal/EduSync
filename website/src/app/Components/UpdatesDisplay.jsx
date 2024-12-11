@@ -41,7 +41,11 @@ export default function UpdatesDisplay({ updatesData }) {
           <h2 className="text-xl font-semibold text-gray-800">Schools</h2>
         </div>
         <div className="overflow-y-auto h-[calc(100vh-70px)]">
-          {updatesData.map((update) => (
+          {[
+            ...new Map(
+              updatesData.map((update) => [update.UDISE_CODE, update])
+            ).values(),
+          ].map((update) => (
             <div
               key={update.id}
               className={`p-4 cursor-pointer hover:bg-blue-50 transition-colors flex items-center space-x-3 ${

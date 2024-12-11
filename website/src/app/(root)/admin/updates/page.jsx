@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import UpdatesDisplay from "../../../Components/UpdatesDisplay";
+import Navbar from "@/app/Components/NavbarAdmin";
 
 const Page = () => {
   const [updatesData, setUpdatesData] = useState([]);
@@ -23,6 +24,7 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <Navbar />
       <UpdatesDisplay updatesData={updatesData} />
     </div>
   );

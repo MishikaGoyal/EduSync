@@ -63,7 +63,7 @@ model School {
 }
 
 model SchoolClone{
-    id               String @id @default(auto()) @map("_id") @db.ObjectId
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
   UDISE_CODE       String @unique
   School_Name      String
   State            String
@@ -109,8 +109,8 @@ model schoolUpdates {
 
 model Resource {
   id                             String   @id @default(auto()) @map("_id") @db.ObjectId
-  UDISE_CODE                     String
-  //school  School @relation(fields: [UDISE_CODE], references: [UDISE_CODE])
+  UDISE_CODE                     String   @unique
+  School_Name                    String?
   resource_type                  String
   quantity                       Int
   description                    String

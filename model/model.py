@@ -42,7 +42,7 @@ def fetch_data():
 
 # Step 4: Train Model
 def train_model(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
 

@@ -14,7 +14,7 @@ load_dotenv()
 api_key = os.getenv("api_key")
 genai.configure(api_key=api_key)
 
-model = joblib.load('model/school_result_model.pkl')
+model = joblib.load('school_result_model.pkl')
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
@@ -45,20 +45,15 @@ def predict():
     new_data = new_data[relevant_columns]
 
     check = check_conditions(full_data)
-    severity_score= severity_calculation(full_data)
+    full_data['Severity']= severity_calculation(full_data)
     predicted_result = model.predict(new_data)
 
     if check == predicted_result:
         full_data['Result'] = 'Standard' if predicted_result[0] == 1 else 'ODD'
     else:
         full_data['Result'] = check
-    
-    if severity_score>=1 and severity_score<=5:
-        full_data['Severity'] = 'Low'
-    elif severity_score>=6 and severity_score<=12:
-        full_data['Severity'] = 'Medium'
-    elif severity_score>=13 and severity_score<=19:
-        full_data['Severity'] = 'High'
+
+    print(full_data)
 
     return full_data
 

@@ -200,7 +200,14 @@ def severity_calculation(record):
     if (total_students >= total_classrooms * 50):
         severity+=3
     
-    return severity
+    if severity>=1 and severity<=5:
+        return 'Low'
+    elif severity>=6 and severity<=12:
+        return 'Medium'
+    elif severity>=13 and severity<=19:
+        return 'High'
+    else:
+        return 'Null'
 
 def removeSymbols(response):
     return response.strip().replace("*", '')

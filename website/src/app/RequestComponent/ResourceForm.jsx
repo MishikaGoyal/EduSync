@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { PlusCircle, AlertCircle } from 'lucide-react';
-import { RESOURCE_TYPES } from '../utils/resourceType';
-import { validateQuantity } from '../utils/validation';
-import debounce from 'lodash.debounce';
+import React, { useEffect, useState, useCallback } from "react";
+import { PlusCircle, AlertCircle } from "lucide-react";
+import { RESOURCE_TYPES } from "../utils/resourceType";
+import { validateQuantity } from "../utils/validation";
+import debounce from "lodash.debounce";
 
 export default function ResourceForm({ onRequestCreated }) {
-  const [type, setType] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [description, setDescription] = useState('');
-  const [quantityError, setQuantityError] = useState('');
+  const [type, setType] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [description, setDescription] = useState("");
+  const [quantityError, setQuantityError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [udiseId, setUdiseId] = useState(null);
 
@@ -33,7 +33,7 @@ export default function ResourceForm({ onRequestCreated }) {
   const debouncedValidation = useCallback(
     debounce((inputValue) => {
       const validation = validateQuantity(type, inputValue);
-      setQuantityError(validation.isValid ? '' : validation.error);
+      setQuantityError(validation.isValid ? "" : validation.error);
     }, 300),
     [type]
   );
@@ -43,71 +43,79 @@ export default function ResourceForm({ onRequestCreated }) {
     setType(newType);
     if (quantity) {
       const validation = validateQuantity(newType, quantity);
-      setQuantityError(validation.isValid ? '' : validation.error);
+      setQuantityError(validation.isValid ? "" : validation.error);
     }
   };
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (!udiseId) {
-      console.error("No UDISE ID found.");
-      return;
-    }
-
-    if (!type || quantityError) return;
-
-    const validation = validateQuantity(type, quantity);
-    if (!validation.isValid) {
-      setQuantityError(validation.error);
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/resource-request/principal/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          UDISE_CODE: udiseId,
-          resource_type: type,
-          quantity: parseInt(quantity, 10),
-          description: description,
-          adminId: "admin_1",
-        }),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to create new resource request:", response.statusText);
+      if (!udiseId) {
+        console.error("No UDISE ID found.");
         return;
       }
 
-      // Check if the content type is JSON before parsing
-      const contentType = response.headers.get("Content-Type");
-      if (!contentType || !contentType.includes("application/json")) {
-        console.error("Expected JSON but got:", contentType);
+      if (!type || quantityError) return;
+
+      const validation = validateQuantity(type, quantity);
+      if (!validation.isValid) {
+        setQuantityError(validation.error);
         return;
       }
 
-      const responseData = await response.json(); // Parse the response as JSON
+      setIsSubmitting(true);
+      try {
+        const response = await fetch("/api/resource-request/principal/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            UDISE_CODE: udiseId,
+            resource_type: type,
+            quantity: parseInt(quantity, 10),
+            description: description,
+            adminId: "admin_1",
+          }),
+        });
 
-      console.log("logging the newly created resource request:", responseData);
-      onRequestCreated(responseData); // Use the passed down callback
+        if (!response.ok) {
+          console.error(
+            "Failed to create new resource request:",
+            response.statusText
+          );
+          return;
+        }
 
-      // Reset form
-      setType('');
-      setQuantity('');
-      setDescription('');
-      setQuantityError('');
-    } catch (error) {
-      console.error('Failed to create request:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [udiseId, type, quantity, description, quantityError, onRequestCreated]); // Dependencies
+        // Check if the content type is JSON before parsing
+        const contentType = response.headers.get("Content-Type");
+        if (!contentType || !contentType.includes("application/json")) {
+          console.error("Expected JSON but got:", contentType);
+          return;
+        }
 
+        const responseData = await response.json(); // Parse the response as JSON
+
+        console.log(
+          "logging the newly created resource request:",
+          responseData
+        );
+        onRequestCreated(responseData); // Use the passed down callback
+
+        // Reset form
+        setType("");
+        setQuantity("");
+        setDescription("");
+        setQuantityError("");
+      } catch (error) {
+        console.error("Failed to create request:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [udiseId, type, quantity, description, quantityError, onRequestCreated]
+  ); // Dependencies
 
   return (
     <form onSubmit={handleSubmit} className="card">
@@ -140,10 +148,19 @@ export default function ResourceForm({ onRequestCreated }) {
             type="text"
             value={quantity}
             onChange={handleQuantityChange}
-            className={`form-input ${quantityError ? 'border-red-300 focus:ring-red-500' : ''}`}
+            className={`form-input ${
+              quantityError ? "border-red-300 focus:ring-red-500" : ""
+            }`}
             required
             disabled={isSubmitting}
-            placeholder={type ? `Enter quantity in ${RESOURCE_TYPES.find(r => r.label === type)?.unit || 'units'}` : 'Select a resource type first'}
+            placeholder={
+              type
+                ? `Enter quantity in ${
+                    RESOURCE_TYPES.find((r) => r.label === type)?.unit ||
+                    "units"
+                  }`
+                : "Select a resource type first"
+            }
           />
           {quantityError && (
             <div className="mt-2 flex items-center text-sm text-red-600">
@@ -171,7 +188,7 @@ export default function ResourceForm({ onRequestCreated }) {
           disabled={isSubmitting || !!quantityError}
         >
           <PlusCircle className="w-5 h-5 mr-2" />
-          {isSubmitting ? 'Submitting...' : 'Submit Request'}
+          {isSubmitting ? "Submitting..." : "Submit Request"}
         </button>
       </div>
     </form>

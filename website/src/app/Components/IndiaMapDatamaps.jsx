@@ -8,6 +8,9 @@ const IndiaMapDatamaps = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
+  // Store hover state for the map (to stop flickering)
+  const [hoverState, setHoverState] = useState(null);
+
   // Fetch school data from the API
   useEffect(() => {
     const fetchSchoolData = async () => {
@@ -67,6 +70,14 @@ const IndiaMapDatamaps = () => {
     });
   };
 
+  const handleMouseEnter = (state) => {
+    setHoverState(state); // Set the hovered state
+  };
+
+  const handleMouseLeave = () => {
+    setHoverState(null); // Reset hover state
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -79,11 +90,19 @@ const IndiaMapDatamaps = () => {
     <div style={{ width: "60%", margin: "0 auto", maxWidth: "500px" }}>
       <DatamapsIndia
         regionData={regionData} // Pass the aggregated data
-        hoverComponent={({ value }) => {
+        hoverComponent={({ value, mouseX, mouseY }) => {
           const tooltip = value.tooltip ? value.tooltip.body : [];
-
           return (
-            <div>
+            <div
+              className="HoverInfo"
+              style={{
+                position: "absolute",
+                left: `${mouseX + 5}px`, // Adjust offset (e.g., +5px for closer positioning)
+                top: `${mouseY + 5}px`, // Adjust offset similarly
+                pointerEvents: "none", // Ensure it doesn’t interfere with hover events
+                zIndex: 1000,
+              }}
+            >
               <div>{value.name}</div>
               {tooltip.length > 1 && (
                 <>
@@ -103,7 +122,43 @@ const IndiaMapDatamaps = () => {
           weight: 50,
         }}
         onClick={handleStateClick}
+        onMouseEnter={handleMouseEnter} // Handle hover enter
+        onMouseLeave={handleMouseLeave} // Handle hover leave
       />
+
+      {/* Hover info styling */}
+      {hoverState && (
+        <div
+          className="HoverInfo"
+          style={{
+            position: "fixed",
+            top: "222px", // You can dynamically set the position based on mouse position
+            left: "307px", // Dynamically set this as well
+            display: hoverState ? "block" : "none", // Show or hide based on hoverState
+          }}
+        >
+          <div>
+            <div>{hoverState}</div> {/* Dynamically display state name */}
+            {/* Additional info can go here */}
+          </div>
+          <style>
+            {`
+              .HoverInfo {
+                position: fixed;
+                min-width: 8ch;
+                background-color: white;
+                box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.3);
+                padding: 7px;
+                border-radius: 4px;
+              }
+              .HoverInfo p {
+                margin: 0;
+                font-size: 0.9em;
+              }
+            `}
+          </style>
+        </div>
+      )}
 
       {/* Display the clicked state data */}
       {selectedStateData && (

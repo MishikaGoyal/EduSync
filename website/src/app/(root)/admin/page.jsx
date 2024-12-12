@@ -95,7 +95,7 @@ export default function AdminPage() {
     {
       imageSrc: "/img7.jpg",
       headline: "Check Structure",
-      href: "/admin/school-structure",
+      href: "/admin",
       description:
         "Check School Structure feature leverages a machine learning model to analyze and categorize schools into two distinct categories: Odd and Standard. This categorization is based on various critical parameters such as the total number of classrooms, teacher-student ratio, library and drinking water availability,  The ML model processes the data to identify schools that deviate significantly from typical structural (Odd) . This feature enables education administrators to pinpoint schools needing immediate attention and make data-driven decisions to improve infrastructure, resource allocation.",
     },

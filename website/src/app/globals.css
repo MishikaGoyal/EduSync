@@ -520,3 +520,19 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.HoverInfo {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.3);
+  padding: 5px; /* Reduce padding for compactness */
+  border-radius: 4px;
+  font-size: 0.9em;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* Prevent interaction */
+  z-index: 1000;
+}
+.HoverInfo p {
+  margin: 0;
+  font-size: 0.9em;
+}

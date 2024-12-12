@@ -14,7 +14,7 @@ load_dotenv()
 api_key = os.getenv("api_key")
 genai.configure(api_key=api_key)
 
-model = joblib.load('school_result_model.pkl')
+model = joblib.load('model/school_result_model.pkl')
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
@@ -77,8 +77,8 @@ def check_again():
     if not full_data:
         return jsonify({"error": "No data provided"}), 400
     
-    results_output = check_conditions(full_data)
-    return results_output
+    result_output = check_conditions(full_data)
+    return result_output
 
 @app.route('/suggestions', methods=['GET','POST'])
 def generate_guidance():
@@ -113,6 +113,7 @@ def generate_guidance():
 
     prompt = prompt_header + f"\n\nReasons: {reason}"
     guidance_message = gemini_pro_response(prompt)
+    
 
     return guidance_message
 

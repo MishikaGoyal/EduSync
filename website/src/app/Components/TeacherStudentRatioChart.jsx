@@ -5,16 +5,15 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-  ArcElement, // Import ArcElement
+  ArcElement,
   Tooltip,
   Legend,
 } from "chart.js";
-import { new_school_data } from "../lib/school_dash_data";
 
 // Register necessary components, including ArcElement for Bar chart rendering
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
-const processData = () => {
+const processData = ({ schoolData }) => {
   const ranges = [
     { min: 0, max: 10 },
     { min: 10, max: 20 },
@@ -26,7 +25,7 @@ const processData = () => {
 
   const bucketCounts = Array(ranges.length).fill(0);
 
-  new_school_data.forEach((school) => {
+  schoolData.forEach((school) => {
     const students = parseInt(school.Total_Students, 10) || 0;
     const teachers = parseInt(school.Total_Teachers, 10) || 0;
     const ratio = teachers === 0 ? 0 : Math.round(students / teachers);
@@ -44,8 +43,8 @@ const processData = () => {
   };
 };
 
-const TeacherStudentRatioChart = () => {
-  const { labels, data } = processData();
+const TeacherStudentRatioChart = ({ schoolData }) => {
+  const { labels, data } = processData({ schoolData });
 
   const chartData = {
     labels,
@@ -53,8 +52,8 @@ const TeacherStudentRatioChart = () => {
       {
         label: "Number of Schools",
         data,
-        backgroundColor: "rgba(51, 220, 242, 0.8)",
-        borderColor: "rgba(51, 220, 242, 1)",
+        backgroundColor: "rgba(19, 179, 232, 0.8)",
+        borderColor: "rgba(19, 179, 232, 1)",
         borderWidth: 1,
       },
     ],
@@ -73,6 +72,11 @@ const TeacherStudentRatioChart = () => {
         title: {
           display: true,
           text: "Number of Schools",
+          font:{
+            size : 14,
+            weight:'bold',
+          },
+          padding: 2
         },
         ticks: {
           stepSize: 1,
@@ -82,6 +86,11 @@ const TeacherStudentRatioChart = () => {
         title: {
           display: true,
           text: "Student-to-Teacher Ratio",
+          font: {
+            size: 14,
+            weight:'bold'
+          },
+          padding:6
         },
         reverse: true, // Reverse the y-axis to have 0-10 at the bottom
       },

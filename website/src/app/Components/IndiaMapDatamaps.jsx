@@ -4,7 +4,7 @@ import { aggregateSchoolData } from "../lib/aggregateSchoolData"; // Assuming ag
 
 const IndiaMapDatamaps = () => {
   const [selectedStateData, setSelectedStateData] = useState(null);
-  const [schoolData, setSchoolData] = useState([]);  // State to store fetched data
+  const [schoolData, setSchoolData] = useState([]); // State to store fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
@@ -14,7 +14,7 @@ const IndiaMapDatamaps = () => {
       try {
         const response = await fetch("/api/dashboard-schools");
         const result = await response.json();
-        
+
         if (result.success) {
           setSchoolData(result.data); // Store the fetched data
         } else {
@@ -35,7 +35,7 @@ const IndiaMapDatamaps = () => {
     if (schoolData.length > 0) {
       return aggregateSchoolData(schoolData);
     }
-    return {};  // Return empty object if no data is available
+    return {}; // Return empty object if no data is available
   }, [schoolData]);
 
   // Memoize the regionData to avoid recalculating on every render
@@ -107,7 +107,13 @@ const IndiaMapDatamaps = () => {
 
       {/* Display the clicked state data */}
       {selectedStateData && (
-        <div style={{ marginTop: "20px", padding: "20px", border: "1px solid #ccc" }}>
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "20px",
+            border: "1px solid #ccc",
+          }}
+        >
           <h2>{selectedStateData.state}</h2>
           <p>{`Total Schools: ${selectedStateData.total}`}</p>
           <p>{`ODD Schools: ${selectedStateData.odd}`}</p>

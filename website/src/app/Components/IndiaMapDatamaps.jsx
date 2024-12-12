@@ -1,13 +1,42 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import DatamapsIndia from "react-datamaps-india";
-import { aggregateSchoolData } from "../lib/aggregateSchoolData";
-import { new_SSData } from "../lib/new_SS";
+import { aggregateSchoolData } from "../lib/aggregateSchoolData"; // Assuming aggregateSchoolData is a utility function for aggregation
 
 const IndiaMapDatamaps = () => {
   const [selectedStateData, setSelectedStateData] = useState(null);
+  const [schoolData, setSchoolData] = useState([]);  // State to store fetched data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
-  // Aggregate school data
-  const aggregatedData = useMemo(() => aggregateSchoolData(new_SSData), [new_SSData]);
+  // Fetch school data from the API
+  useEffect(() => {
+    const fetchSchoolData = async () => {
+      try {
+        const response = await fetch("/api/dashboard-schools");
+        const result = await response.json();
+        
+        if (result.success) {
+          setSchoolData(result.data); // Store the fetched data
+        } else {
+          setError("Failed to fetch school data.");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching school data.");
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchSchoolData();
+  }, []);
+
+  // Aggregate school data once the data is fetched
+  const aggregatedData = useMemo(() => {
+    if (schoolData.length > 0) {
+      return aggregateSchoolData(schoolData);
+    }
+    return {};  // Return empty object if no data is available
+  }, [schoolData]);
 
   // Memoize the regionData to avoid recalculating on every render
   const regionData = useMemo(() => {
@@ -37,6 +66,14 @@ const IndiaMapDatamaps = () => {
       standard: stateData.STANDARD,
     });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div style={{ width: "60%", margin: "0 auto", maxWidth: "500px" }}>

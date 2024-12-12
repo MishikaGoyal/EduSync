@@ -1,50 +1,46 @@
 const { PrismaClient } = require("@prisma/client");
-
 const prisma = new PrismaClient();
+const schoolData = require("../../model/datasets/schools_data.json");
 
 async function main() {
-  const resources = [
-    {
-      UDISE_CODE: "29  20  01  23  912",
-      School_Name: "Blue Ridge Elementary",
-      resource_type: "Computers",
-      quantity: 10,
-      description: "Laptops for computer lab",
-      status: "pending",
-      max_date_for_resource_delivery: new Date("2024-12-20T23:59:59Z"),
-      rerequest_count: 0,
-      adminId: "admin124",
-    },
-    {
-      UDISE_CODE: "29  20  01  23  915",
-      School_Name: "Sunrise Middle School",
-      resource_type: "Sports Equipment",
-      quantity: 20,
-      description: "Basketballs and nets",
-      status: "pending",
-      max_date_for_resource_delivery: new Date("2024-12-25T23:59:59Z"),
-      rerequest_count: 0,
-      adminId: "admin125",
-    },
-  ];
+  console.log("Seeding database...");
+  for (const school of schoolData) {
+    const isThere = await prisma.school.findUnique({
+      where: {
+        UDISE_CODE: school["UDISE CODE"],
+      },
+    });
 
-  for (const resource of resources) {
-    await prisma.resource.create({
+    if (isThere) continue;
+    await prisma.school.create({
       data: {
-        UDISE_CODE: resource.UDISE_CODE,
-        School_Name: resource.School_Name,
-        resource_type: resource.resource_type,
-        quantity: resource.quantity,
-        description: resource.description,
-        status: resource.status,
-        max_date_for_resource_delivery: resource.max_date_for_resource_delivery,
-        rerequest_count: resource.rerequest_count,
-        adminId: resource.adminId,
+        UDISE_CODE: school["UDISE CODE"],
+        School_Name: school["School Name"] || "",
+        State: school["State"] || "",
+        School_Category: school["School Category"] || "",
+        School_Management: school["School Management"] || "",
+        School_Type: school["School Type"] || "",
+        Grade_Configuration: school["Grade Configuration"] || "",
+        Year_of_Establishment: school["Year of Establishment"] || "",
+        Boundary_Wall: parseInt(school["Boundary Wall"]) === 1,
+        Total_Class_Rooms: school["Total Class Rooms"] || "",
+        Library_Available: parseInt(school["Library Available"]) === 1,
+        Separate_Room_for_HM: parseInt(school["Separate Room for HM"]) === 1,
+        Drinking_Water_Available:
+          parseInt(school["Drinking Water Available"]) === 1,
+        Playground_Available: parseInt(school["Playground Available"]) === 1,
+        Electricity_Availability:
+          parseInt(school["Electricity Availability"]) === 1,
+        Total_Teachers: school["Total Teachers"] || "",
+        Total_Washrooms: school["Total Washrooms"] || "",
+        Total_Students: school["Total Students"] || "",
+        Result: school["Result"] || "",
+        Severity: school["Severity"] || "",
+        CWSN: parseInt(school["Is Special School for CWSN"]) === 1,
       },
     });
   }
-
-  console.log("Resources seeded successfully");
+  console.log("Database seeded successfully.");
 }
 
 main()

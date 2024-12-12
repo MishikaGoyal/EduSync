@@ -69,6 +69,17 @@ def get_reasons():
     reasons_output = reasons(full_data)
     return reasons_output
 
+@app.route('/check', methods=['POST'])
+def get_reasons():
+
+    full_data = request.get_json()
+
+    if not full_data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    results_output = check_conditions(full_data)
+    return results_output
+
 @app.route('/suggestions', methods=['GET','POST'])
 def generate_guidance():
     full_data = request.get_json()

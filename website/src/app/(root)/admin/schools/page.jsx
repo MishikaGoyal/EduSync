@@ -9,6 +9,9 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [filterState, setFilterState] = useState(""); // State for filtering
   const [filteredSchools, setFilteredSchools] = useState([]); // State for filtered schools
+  const [filterUDISE, setFilterUDISE] = useState([]);
+  const [filterResult, setFilterResult] = useState([]);
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     const fetchAllSchoolData = async () => {
@@ -28,7 +31,7 @@ const Page = () => {
 
         const data = await response.json();
         setSchools(data.schools || []);
-        setFilteredSchools(data.schools || []); // Initialize filtered schools
+        setFilteredSchools(sortSchools(data.schools) || []); // Initialize filtered schools
       } catch (err) {
         setError(err.message);
       } finally {
@@ -38,20 +41,63 @@ const Page = () => {
 
     fetchAllSchoolData();
   }, []);
+  const sortSchools = (schools) => {
+    return schools.sort((a, b) => {
+      // First compare by state
+      const stateComparison = a.State.localeCompare(b.State);
+      if (stateComparison !== 0) return stateComparison;
 
-  // Filter schools by state
-  const handleFilterChange = (state) => {
-    setFilterState(state);
-    if (state) {
-      const filtered = schools.filter((school) =>
-        school.State.toLowerCase().includes(state.toLowerCase())
+      // If states are the same, compare by school name
+      return a.School_Name.localeCompare(b.School_Name);
+    });
+  };
+  const handleFilterChange = () => {
+    let filtered = schools;
+
+    // Filter by state
+    if (filterState) {
+      filtered = filtered.filter((school) =>
+        school.State.toLowerCase().includes(filterState.toLowerCase())
       );
-      setFilteredSchools(filtered);
-    } else {
-      setFilteredSchools(schools); // Reset to all schools when filter is cleared
     }
+
+    // Filter by UDISE code (ignoring spaces)
+    if (filterUDISE) {
+      const udiseFilter = filterUDISE.toString().replace(/\s+/g, ""); // Convert to string and remove spaces
+      filtered = filtered.filter((school) =>
+        school.UDISE_CODE.toString().replace(/\s+/g, "").includes(udiseFilter)
+      );
+    }
+
+    // Filter by result
+    if (filterResult && typeof filterResult === "string") {
+      filtered = filtered.filter(
+        (school) => school.Result.toLowerCase() === filterResult.toLowerCase()
+      );
+    }
+
+    // Filter by checkboxes (Playground, Electricity, Drinking Water)
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        filtered = filtered.filter((school) => school[key] === true);
+      }
+    });
+    filtered = sortSchools(filtered);
+    setFilteredSchools(filtered);
   };
 
+  useEffect(() => {
+    handleFilterChange();
+  }, [filterState, filterUDISE, filterResult, filters]);
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+    handleFilterChange(); // Call to update filtered schools immediately
+  };
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error}</p>;
 
@@ -69,16 +115,69 @@ const Page = () => {
         </motion.h1>
 
         {/* Filter Section */}
-        <div className="mb-8 flex justify-center">
-          <input
-            type="text"
-            value={filterState}
-            onChange={(e) => handleFilterChange(e.target.value)}
-            placeholder="Filter by State"
-            className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          />
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <input
+              type="text"
+              value={filterState}
+              onChange={(e) => setFilterState(e.target.value)}
+              placeholder="Filter by State"
+              aria-label="Filter by State"
+              className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <input
+              type="text"
+              value={filterUDISE}
+              onChange={(e) => setFilterUDISE(e.target.value)}
+              placeholder="Filter by UDISE Code"
+              aria-label="Filter by UDISE Code"
+              className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <input
+              type="text"
+              value={filterResult}
+              onChange={(e) => setFilterResult(e.target.value)}
+              placeholder="Filter by Result"
+              aria-label="Filter by Result"
+              className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-4 mt-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="Playground_Available"
+                checked={filters.Playground_Available || false}
+                onChange={handleCheckboxChange}
+                className="mr-2"
+              />
+              Playground
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="Electricity_Availability"
+                checked={filters.Electricity_Availability || false}
+                onChange={handleCheckboxChange}
+                className="mr-2"
+              />
+              Electricity
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="Drinking_Water_Available"
+                checked={filters.Drinking_Water_Available || false}
+                onChange={handleCheckboxChange}
+                className="mr-2"
+              />
+              Drinking Water
+            </label>
+          </div>
         </div>
 
+        {/* Table */}
         <div className="overflow-x-auto shadow-2xl rounded-lg">
           <motion.table
             className="min-w-full bg-white rounded-lg border border-gray-200"
@@ -90,6 +189,9 @@ const Page = () => {
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   UDISE Code
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
+                  School Name
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   State
@@ -122,7 +224,7 @@ const Page = () => {
                   Electricity
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
-                  Total Teachers
+                  Teacher
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-indigo-800 uppercase tracking-wider">
                   Total Students
@@ -143,6 +245,9 @@ const Page = () => {
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
                     {school.UDISE_CODE}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
+                    {school.School_Name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-950">
                     {school.State}

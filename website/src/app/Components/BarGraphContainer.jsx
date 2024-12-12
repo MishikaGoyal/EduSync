@@ -39,14 +39,14 @@ const BarGraphContainer = ({ schoolData }) => {
       {
         label: "True",
         data: featureCounts.map((item) => item.trueCount),
-        backgroundColor: "rgba(50, 201, 42, 1)", // Green for "true"
+        backgroundColor: "rgba(75, 192, 192, 0.8)", // Green for "true"
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
       {
         label: "False",
         data: featureCounts.map((item) => item.falseCount),
-        backgroundColor: "rgba(219, 32, 11, 1)", // Red for "false"
+        backgroundColor: "rgba(255, 99, 132, 0.8)", // Red for "false"
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },

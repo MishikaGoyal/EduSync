@@ -1,10 +1,10 @@
 import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { new_school_data } from '../lib/school_dash_data';
+
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
-const BarGraphContainer = () => {
+const BarGraphContainer = ({ schoolData }) => {
   // Extract categorical features with improved labels
   const features = [
     { key: 'Library_Available', label: 'Library Available' },
@@ -18,8 +18,8 @@ const BarGraphContainer = () => {
 
   // Count occurrences of true and false for each feature
   const featureCounts = features.map(({ key, label }) => {
-    const trueCount = new_school_data.filter((school) => school[key] === true).length;
-    const falseCount = new_school_data.filter((school) => school[key] === false).length;
+    const trueCount = schoolData.filter((school) => school[key] === true).length;
+    const falseCount = schoolData.filter((school) => school[key] === false).length;
     return { feature: label, trueCount, falseCount };
   });
 
@@ -53,7 +53,7 @@ const BarGraphContainer = () => {
         position: 'bottom',
       },
       title: {
-        display: true,
+        display: false,
         text: 'Categorical Feature Overview',
       },
     },
@@ -105,7 +105,7 @@ const BarGraphContainer = () => {
 
   return (
     <div style={styles.graphContainer}>
-      <h1 className="text-center font-semibold">Bar Chart</h1>
+      <h1 className="text-center font-semibold">Categorical Feature Overview</h1>
       <Bar data={data} options={options} />
     </div>
   );

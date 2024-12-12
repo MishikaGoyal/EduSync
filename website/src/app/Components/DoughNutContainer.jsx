@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
-import { new_school_data } from '../lib/school_dash_data';
+//import { new_school_data } from '../lib/school_dash_data';
 
 // Register necessary chart components
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
-const DoughNutContainer = () => {
+const DoughNutContainer = ({schoolData}) => {
     let oddSchoolNum = 0;
     let standSchoolNum = 0;
 
-    new_school_data.forEach((school) => {
+    schoolData.forEach((school) => {
         if (school.Result === 'ODD') {
             oddSchoolNum++;
         } else {

@@ -70,7 +70,7 @@ def get_reasons():
     return reasons_output
 
 @app.route('/check', methods=['POST'])
-def get_reasons():
+def check_again():
 
     full_data = request.get_json()
 

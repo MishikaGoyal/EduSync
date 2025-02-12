@@ -53,12 +53,9 @@ const Page = () => {
   useEffect(() => {
     const fetchAllSchoolData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/all-school-data",
-          {
-            method: "GET",
-          }
-        );
+        const response = await fetch("/api/all-school-data", {
+          method: "GET",
+        });
         if (
           !response.ok ||
           !response.headers.get("content-type")?.includes("application/json")

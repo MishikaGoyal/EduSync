@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import Navbar from "@/app/Components/NavbarPrincipal";
 export default function SchoolDashboard() {
@@ -8,6 +8,43 @@ export default function SchoolDashboard() {
   const [reason, setReason] = useState(null);
   const [suggestions, setSuggestions] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const generateReason = useCallback(async () => {
+    try {
+      const response = await fetch("/api/reasons", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify(schoolData),
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        throw new Error("Error in fetching reasons");
+      }
+      const resData = await response.json();
+      setReason(resData);
+    } catch (error) {
+      console.error("Error generating reasons:", error);
+    }
+  }, [schoolData]);
+  const generateSuggestions = useCallback(async () => {
+    try {
+      const response = await fetch("/api/suggestions", {
+        headers: {
+          "Content-type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(schoolData),
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        throw new Error("Error in generating suggestions");
+      }
+      const resData = await response.json();
+      setSuggestions(resData);
+    } catch (error) {
+      console.error("Error generating suggestions:", error);
+    }
+  }, [schoolData]);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -26,7 +63,7 @@ export default function SchoolDashboard() {
       generateReason();
       generateSuggestions();
     }
-  }, [schoolData]);
+  }, [schoolData, generateReason, generateSuggestions]);
   const formatText = (text) => {
     if (typeof text !== "string") return null; // Safeguard for non-string inputs
     return text.split("\n\n").map((paragraph, index) => (
@@ -50,44 +87,6 @@ export default function SchoolDashboard() {
       setSchoolData(data.data);
     } catch (error) {
       console.error("Error fetching school data:", error);
-    }
-  };
-
-  const generateReason = async () => {
-    try {
-      const response = await fetch("/api/reasons", {
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        body: JSON.stringify(schoolData),
-        cache: "no-store",
-      });
-      if (!response.ok) {
-        throw new Error("Error in fetching reasons");
-      }
-      const resData = await response.json();
-      setReason(resData);
-    } catch (error) {
-      console.error("Error generating reasons:", error);
-    }
-  };
-
-  const generateSuggestions = async () => {
-    try {
-      const response = await fetch("/api/suggestions", {
-        headers: {
-          "Content-type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(schoolData),
-        cache: "no-store",
-      });
-      if (!response.ok) {
-        throw new Error("Error in generating suggestions");
-      }
-      const resData = await response.json();
-      setSuggestions(resData);
-    } catch (error) {
-      console.error("Error generating suggestions:", error);
     }
   };
 

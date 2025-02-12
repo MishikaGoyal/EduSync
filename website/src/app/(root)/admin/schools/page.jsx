@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/app/Components/NavbarAdmin";
 import {
@@ -80,7 +80,7 @@ const Page = () => {
   }, []);
 
   // Comprehensive filter function
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let result = schools;
 
     // Apply each filter conditionally
@@ -154,7 +154,20 @@ const Page = () => {
     }
     setFilteredSchools(result);
     setPage(0);
-  };
+  }, [
+    schools,
+    filterState,
+    filterSchoolCategory,
+    filterBoundaryWall,
+    filterLibrary,
+    filterDrinkingWater,
+    filterPlayground,
+    filterElectricity,
+    filterCWSN,
+    searchSchoolName,
+    sortType,
+    isAlphabeticallySorted,
+  ]);
 
   // Run filters whenever any filter changes
   useEffect(() => {
@@ -171,6 +184,7 @@ const Page = () => {
     searchSchoolName,
     sortType, // Add sortType to dependency array
     isAlphabeticallySorted,
+    applyFilters,
   ]);
 
   const handleChangePage = (event, newPage) => {

@@ -2,7 +2,7 @@
 
 import ResourceComponent from "@/app/Components/ResourceComponent";
 import { useEffect, useState } from "react";
-const page = () => {
+const Page = () => {
   const [updateData, setUpdateData] = useState([]);
   const fetchUpdateData = async () => {
     const response = await fetch("/api/update", {
@@ -33,11 +33,11 @@ const page = () => {
       </div>
       <div>
         {updateData.map((item, index) => {
-          return <ResourceComponent data={item} />;
+          return <ResourceComponent data={item} key={index} />;
         })}
       </div>
     </section>
   );
 };
 
-export default page;
+export default Page;

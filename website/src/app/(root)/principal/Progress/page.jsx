@@ -42,10 +42,10 @@ export default function ResourceManagementDashboard() {
 
   // Fetch school data on page load
   useEffect(() => {
-    setFormData({
+    setFormData((formData) => ({
       ...formData,
       UDISE_CODE: sessionStorage.getItem("udiseId"),
-    });
+    }));
     console.log(sessionStorage.getItem("udiseId"));
     async function fetchSchoolData() {
       try {

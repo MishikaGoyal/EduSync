@@ -4,6 +4,7 @@ import { CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 export default function Page() {
   const [loginId, setLoginId] = useState("");
@@ -61,20 +62,26 @@ export default function Page() {
           {" "}
           <div>
             <div className="absolute mt-[50px]">
-              <img
+              <Image
                 src="https://cdn.pixabay.com/photo/2015/08/05/13/55/children-876543_1280.jpg"
                 alt=""
+                width={400}
+                height={400}
                 className="mt-[70px] ml-[80px] w-[400px]"
               />
-              <img
+              <Image
                 src="https://cdn.pixabay.com/photo/2018/09/04/10/27/never-stop-learning-3653430_1280.jpg"
                 alt=""
+                width={400}
+                height={400}
                 className="w-[400px] ml-[80px]"
               />
               <div className="flex">
-                <img
+                <Image
                   src="https://cdn.pixabay.com/photo/2017/12/22/08/01/book-3033196_1280.jpg"
                   alt=""
+                  width={400}
+                  height={400}
                   className="w-[400px] ml-[480px] -mt-[493px]"
                 />
               </div>

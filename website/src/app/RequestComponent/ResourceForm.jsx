@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { PlusCircle, AlertCircle } from "lucide-react";
+import debounce from "lodash.debounce";
 import { RESOURCE_TYPES } from "../utils/resourceType";
 import { validateQuantity } from "../utils/validation";
-import debounce from "lodash.debounce";
 
 export default function ResourceForm({ onRequestCreated }) {
   const [type, setType] = useState("");
@@ -14,134 +14,89 @@ export default function ResourceForm({ onRequestCreated }) {
   const [schoolName, setSchoolName] = useState("");
 
   useEffect(() => {
-    const fetchSchoolName = async () => {
-      try {
-        const id = sessionStorage.getItem("udiseId");
-        if (!id) {
-          console.error("No UDISE ID found in session storage.");
-          return;
-        }
+    const id = sessionStorage.getItem("udiseId");
+    if (!id) return;
+    setUdiseId(id);
 
-        setUdiseId(id);
-
-        const response = await fetch(
-          `/api/resource-request/principal/get-name?udise_code=${id}`
-        );
-
-        if (!response.ok) {
-          console.error("Failed to fetch school name:", response.statusText);
-          return;
-        }
-
-        const data = await response.json();
-        if (data?.School_Name) {
-          setSchoolName(data.School_Name);
-          console.log("Fetched School Name:", data.School_Name);
-        } else {
-          console.error("School name not found in response.");
-        }
-      } catch (error) {
-        console.error("Error fetching school name:", error);
-      }
-    };
-
-    fetchSchoolName();
+    fetch(`/api/resource-request/principal/get-name?udise_code=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.School_Name) setSchoolName(data.School_Name);
+      })
+      .catch((err) => console.error("Error fetching school name:", err));
   }, []);
 
-  const handleQuantityChange = (e) => {
-    const inputValue = e.target.value;
-    setQuantity(inputValue); // Update the quantity immediately
-    if (type) {
-      debouncedValidation(inputValue); // Only debounce validation
-    }
-  };
-
-  const debouncedValidation = useCallback(
-    debounce((inputValue) => {
-      const validation = validateQuantity(type, inputValue);
-      setQuantityError(validation.isValid ? "" : validation.error);
-    }, 300),
+  const debouncedValidation = useMemo(
+    () =>
+      debounce((inputValue) => {
+        const validation = validateQuantity(type, inputValue);
+        setQuantityError(validation.isValid ? "" : validation.error);
+      }, 300),
     [type]
   );
 
+  useEffect(() => {
+    return () => debouncedValidation.cancel();
+  }, [debouncedValidation]);
+
+  const handleQuantityChange = (e) => {
+    setQuantity(e.target.value);
+    if (type) debouncedValidation(e.target.value);
+  };
+
   const handleTypeChange = (e) => {
-    const newType = e.target.value;
-    setType(newType);
+    setType(e.target.value);
     if (quantity) {
-      const validation = validateQuantity(newType, quantity);
+      const validation = validateQuantity(e.target.value, quantity);
       setQuantityError(validation.isValid ? "" : validation.error);
     }
   };
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!udiseId || !schoolName || !type || quantityError) return;
 
-      if (!udiseId || !schoolName) {
-        console.error("Missing UDISE ID or School Name.");
-        return;
-      }
+    const validation = validateQuantity(type, quantity);
+    if (!validation.isValid) {
+      setQuantityError(validation.error);
+      return;
+    }
 
-      if (!type || quantityError) return;
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/resource-request/principal/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          UDISE_CODE: udiseId,
+          School_Name: schoolName,
+          resource_type: type,
+          quantity: parseInt(quantity, 10),
+          description,
+          adminId: "admin_1",
+        }),
+      });
 
-      const validation = validateQuantity(type, quantity);
-      if (!validation.isValid) {
-        setQuantityError(validation.error);
-        return;
-      }
-
-      setIsSubmitting(true);
-      try {
-        const response = await fetch(
-          "/api/resource-request/principal/create",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              UDISE_CODE: udiseId,
-              School_Name: schoolName, // Include school name in the payload
-              resource_type: type,
-              quantity: parseInt(quantity, 10),
-              description: description,
-              adminId: "admin_1",
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          console.error(
-            "Failed to create new resource request:",
-            response.statusText
-          );
-          return;
-        }
-
+      if (response.ok) {
         const responseData = await response.json();
-        console.log("Newly created resource request:", responseData);
         onRequestCreated(responseData);
-
-        // Reset form
         setType("");
         setQuantity("");
         setDescription("");
         setQuantityError("");
-      } catch (error) {
-        console.error("Failed to create request:", error);
-      } finally {
-        setIsSubmitting(false);
       }
-    },
-    [udiseId, schoolName, type, quantity, description, quantityError, onRequestCreated]
-  );
+    } catch (error) {
+      console.error("Failed to create request:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="card">
       <h2 className="text-2xl font-semibold mb-8 pb-4 border-b border-gray-100">
         New Resource Request
       </h2>
-
       <div className="space-y-6">
         <div>
           <label className="form-label">Resource Type</label>
@@ -160,7 +115,6 @@ export default function ResourceForm({ onRequestCreated }) {
             ))}
           </select>
         </div>
-
         <div>
           <label className="form-label">Quantity</label>
           <input
@@ -175,7 +129,8 @@ export default function ResourceForm({ onRequestCreated }) {
             placeholder={
               type
                 ? `Enter quantity in ${
-                    RESOURCE_TYPES.find((r) => r.label === type)?.unit || "units"
+                    RESOURCE_TYPES.find((r) => r.label === type)?.unit ||
+                    "units"
                   }`
                 : "Select a resource type first"
             }
@@ -187,7 +142,6 @@ export default function ResourceForm({ onRequestCreated }) {
             </div>
           )}
         </div>
-
         <div>
           <label className="form-label">Description</label>
           <textarea
@@ -199,7 +153,6 @@ export default function ResourceForm({ onRequestCreated }) {
             placeholder="Provide additional details about your request..."
           />
         </div>
-
         <button
           type="submit"
           className="btn-primary mt-8"
